@@ -1,0 +1,70 @@
+---
+title: Using Simulations to Study LDA, a Dissertation Proposal
+
+affiliation:
+  ## use one only of the following
+  # author-columnar: true         ## one column per author
+  institution-columnar: true  ## one column per institution (multiple autors eventually)
+  # wide: true                  ## one column wide author/affiliation fields
+
+  institution:
+    - name: George Mason University
+      department: Computational and Data Sciences
+      location: Fairfax, VA
+      email: jones.thos.w@gmail.com
+      mark: 1
+      author:
+        - name: Tommy Jones
+abstract: |
+  This is an abstract
+  
+header-includes:
+   - \usepackage{bm}
+   - \usepackage{amsbsy}
+   - \usepackage{amsmath}
+   - \usepackage{amsfonts}
+   - \bibliographystyle{IEEEtran}
+   - \bibliography{IEEEabrv,mybibfile}
+
+bibliography: dissertation_proposal.bib
+output: rticles::ieee_article
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
+options(tinytex.verbose = TRUE)
+```
+
+# Introduction
+
+# Probabilistic Topic Models
+
+## Latent Dirichlet Allocation
+
+## Related Models
+
+* pLSA
+* CTM
+* STM
+* Supervised LDA?
+* Hierarchical LDA?
+* Dynamic topic models?
+
+# Evaluation Methods for Probabilistic Topic Models
+
+* Coherence
+* Reconstruction error
+* Likelihood
+* Perplexity
+
+# Topic Models as Latent Variable Models
+
+# History of Simulation Studies
+
+
+
+
+\newpage
+References {#references .numbered}
+==========
