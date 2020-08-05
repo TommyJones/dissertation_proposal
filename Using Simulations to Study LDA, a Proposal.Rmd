@@ -113,11 +113,14 @@ Yet to be a valid proxy of human language, such simulated data should have the s
 
 ### Simulated Corpora Must Have the Statistical Properties of Human Language
 
-#### Zipf's Law and Heap's Law
+#### Zipf's Law 
 
-Describe them
+Zipf’s law states that the term frequency distribution of any corpus of language in any language or context, follows a power law distribution. [cite Zipf 1949] The conventional wisdom is that this property holds only for documents of sufficient length and that the lowest-frequency words in the corpus do not follow the power law.  Yet the inclusion of compound words holds Zipf’s law through the lowest frequencies in the corpus.[cite Le Quan Ha et al.] In 2011, Goldwater et al. [cite] point out that "it is important for models used in unsupervised [machine] learning to be able to describe the gross statistical properties of the data that they are intended to learn from. Otherwise, these properties may distort inferences about the parameters of the model." Unfortunately they also note that "[Zipf’s law] has been largely ignored in modern machine learning and computational linguistics." 
 
-Describe/summarize how to estimate/how to characterize
+
+
+#### Estimating power laws
+Summarize some of the literature here. Lean heavily on the poweRlaw package vignette for source material. (Also cite poweRlaw explicitly)
 
 #### Zipf's Law in the Context of LDA
 
