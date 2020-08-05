@@ -38,12 +38,20 @@ options(tinytex.verbose = TRUE)
 
 # Introduction
 
-# Probabilistic Topic Models
+Paragraph describing the background of the problem: In spite of probabilistic topic models having been around for 20 years, stubborn problems persist that limit their utility. 
 
-## Latent Dirichlet Allocation
+Paragraph summarizing the (3) studies I plan to do: Demonstrate that 
 
-## Related Models
+Paragraph describing to whom this dissertation will be of value
 
+# Conceptual Framework
+
+## A Brief History of Language Embedding Models
+
+### LSA and Matrix Factorization Models
+Start with LSA (What about term co-occurrence analyses? You have something on that in textmineR)
+
+### Probabilistic Topic Models
 * pLSA
 * CTM
 * STM
@@ -51,16 +59,152 @@ options(tinytex.verbose = TRUE)
 * Hierarchical LDA?
 * Dynamic topic models?
 
-# Evaluation Methods for Probabilistic Topic Models
+### Word Embedding Models
 
-* Coherence
-* Reconstruction error
-* Likelihood
-* Perplexity
+word2vec (and skipgram and negative sampling), doc2vec, GloVe
 
-# Topic Models as Latent Variable Models
+Describe how traditional topic models fit within this framework
+document = "context"
 
-# History of Simulation Studies
+Word embedding models brought novelty in several ways. First, they introduced the concept of a word being represented as a distribution, rather than a binary presence or absence, or a count of occurence in a downstream model. [cite something] Second, they introduced the concept of "word algebra" where mathematical operations on word vectors in the embedding space seem to have semantic interpretations. [cite] There is some debate about whether this latter phenomenon is real or constructed [cite] but the former has become standard practice for a wide range of language modeling tasks. Finally, and perhaps most interestingly, researchers have explored methods for mapping embeddings in different languages on top of each other allowing two languages to "share" the same semantic space. [cite cross lingual word embeddings]
+
+### Transformers and the Pre-Train then Fine-Tune Paradigm
+
+Main point: transformer architecture aside: pre-train then fine-tune is incredibly valuable and maps to a set of problems with traditional topic models:
+(a) How to update an existing model with new data without having to completely re-train from scratch?
+(b) How to deliver "big corpus" linguistic structure to niche problems?
+
+## Probabilistic Topic Models Today
+
+In spite of the machine learning community shifting its focus neural networks, probabilistic topic models are still in widespread use. Frequent users of probabilistic topic models in recent years have come from political science [cite, cite, cite] and humanities [cite, cite, cite]. These new users, in contrast to the machine learning community, do not necessarily need more complex models pushing the state of the art. Instead they need tools that make these models more accessible and more reliable.  
+ 
+Paragraph emphasizing LDA as an embedding model
+document = "context"
+embedding to a probability space
+
+### Unresolved Issues with Probabilistic Topic Models
+
+In [cite Boyd-Graber + Mimno] Boyd-Graber et al. cite four areas that need to be addressed for increased accessibility of probabilistic topic models. Paraphrasing, these four areas are:
+
+1. The effects of different preprocessing and vocabulary curation steps on a resulting model,
+2. How to think about the different model specification choices a researcher must make and the effects of these choices on the resulting model,
+3. Interpreting the results of a probabilistic topic model in a way that is meaningful to humans in the context to which it is applied, and
+4. A systematic investigation of the ways in which topic models can assist users' workflows in information oranization and retreival
+
+The research I propose in this document focuses on the second area. In fact, I argue that the third and fourth follow from the first two. If a model is pathalogically misspecified, either from missteps in data curation or in explicit modeling choices, then any interpretation or application of that model is susptect. 
+
+Concretely: [Describe 1 and 2 above]
+
+Because probabilistic topic models are latent variable models, and they model a process inconsistent with how humans actually write, there is no "right" model for any set of observed data. [However, we can describe the effects of modeling choices in a more rigorous way. And while there may be no "right" model, there are certainly many "wrong" ones. A better understanding of these issues can guard against pathalogical misspecification.]
+
+### Evaluating Probabilistic Topic Models Today
+
+
+
+## Studying Complex Models with Stochastic Simulations
+
+Simulation studies involve gnerating pseudo random data using a known stochastic process. Simulation studies have a long history in the field of statistics. [cite Ripley 1987, Hoaglin and Andrews 1975, Feiveson 2002] The purpose is to study data where the data generating mechanism is known. "A key strength of simulation studies is the ability to understand the behavior of statistical methods because some 'truth' [...] is known from teh process of generating the data." [cite morris et al. 2019]
+
+Probailistic topic models are excellent candidates for study through simulation. They model an explicit data generating process through latent variables. The resulting data are observed, but the generating variables of interest are not. By simulating data through the process modeled by a topic model, one can obtain a "ground truth". One can then interrogate a topic model as an estimator in terms of desireable statistical properties and measure its sensitivity to properties of the input data. 
+
+Simulation studies are indeed used to study probabilistic topic models.
+
+Yet to be a valid proxy of human language, such simulated data should have the same gross statistical properties of human language. To this end, Zipf's law is paramount.
+
+### Simulated Corpora Must Have the Statistical Properties of Human Language
+
+#### Zipf's Law and Heap's Law
+
+Describe them
+
+Describe/summarize how to estimate/how to characterize
+
+#### Zipf's Law in the Context of LDA
+
+Stochastic simulations for LDA have typically used symmetric priors. [cite cite cite] Yet such priors cannot produce corpora that adhere to Zipf's law.
+
+Goldwater et al.
+
+Cite my proof as appendix
+
+Estimation of Zipf's law can be done emprically from data
+
+More than Zipf's law
+- Sparsity
+- Distribution of individual words across documents should be similar
+- Heap's law within documents should be similar(?)
+
+### Focus on Latent Dirichlet Allocation
+
+2nd simplest and most popoular Probabilistic Topic model.
+
+Simplicity makes it a good candidate for study
+
+Simplicity means simulations have known limitations
+- e.g. documents are independent draws ==>  no correlation in topics across documents
+- topics are independent draws ==> no correlation in tokens across topics
+
+We know and expect that in the real world, certain topics should co-occur across documents and certain tokens should co-occur across topics. 
+
+Nevertheless, I hypothesize that studying LDA with simulations in its "gold standard" state may yeild useable insights to guide model specification on real world data.
+
+# Methodology
+
+## Intro/overall approach
+
+Basic idea: use stochastic simulation to study the idealized properties of LDA for open issues.
+
+First, need to demonstrate that stochastic simulations can produce the gross statistical properties of human language and, thus, be valid.
+
+## Study A: Developing a Principled Approach to Performing Simulation Studies of LDA
+Hypothesis: Under certain constraints stochastic simulations using the functional form of LDA can produce synthetic corpora with properties of real-world corpora.
+
+Need to identify a "survey" of languages and tasks to encompass "language" broadly.
+
+Goals: 
+1. Quantify degree and ways that the simulations succeed and fail
+2. Look at traditional (and new?) evaluation metrics and their ability to identify the "right" models that generated the data.
+3. Intentionally misspecify models. What damage is done? Can we detect it?
+   - Related: Does over-specifying the number of topics and then throwing away "bad" topics lead to the correct number vs. doing grid, random, or optimized search?
+4. Post-hoc identification of stop words?
+5. Effects of document length, number of documents, sampling tokens, cutting off stop words/infrequent words in model fit
+
+Evaluation metrics to establish simulations: 
+- Correlation and magnitude of zipf curves
+- Sparsity
+- Fraction of "failed" KS tests across words ranked by frequency
+  - Note need to adjust for multiple tests/binomial proportion gives single thumbs up/down
+  - i.e. Did we reject more or less based on expected random chance?
+- Something about Heap's law? Heap distributions across documents?
+
+Evaluation metrics for model specification:
+1. Usual suspects (and new?) metrics on both in-sample and held out (i.e. newly generated) data
+2. Correlation of learned topics to "true" topics
+
+Approach:
+1. Simulations
+
+
+Approach:
+1. Estimate Zipf from MLE and use for shape of eta
+2. Use Bayesian HP optimization in SigOpt to identify sets of parameter choices on pareto frontier for each selected real corpus - alpha: shape + magnitude, eta: magnitude, k - doc lengths are empirical
+3. Multiple simulations using "optimal" settings and compare how well simulations do to real data
+4. Next step: look at simulations and see if there are any patterns to help inform modeling
+5. If possible, derive rules to get "best fit" models analytically (i.e. with algebra)
+6. Apply rules to real world data - does it look good? What is the counterfactual?
+
+Something else...
+
+## Study B: Transfer Learning for LDA  - Towards a Pre-train then Fine Tune Paradigm
+Hypothesis: None.
+
+Practical: people need to update models in ways that aren't upsetting to users
+New hotness: Pre-train then fine-tune for LDA
+
+
+
+
+## Study C: tidylda - An R Package for LDA Topic Modeling Compatible with Tidy Data Principles
 
 
 
