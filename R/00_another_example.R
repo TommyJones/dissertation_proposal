@@ -7,7 +7,23 @@
 
 # A lingering issue is that an lda model fit on it is poor. The "best possible fit"
 # measure of r-squared on the parameters that generate the model is also poor.
-# I didn't have this issue with the r-squared topic models paper. 
+# I didn't have this issue with the r-squared topic models paper.
+
+# UPDATE 2020-07-27
+# Setting the magnitude of beta to 0.01 * V results in a good fitting and mostly
+# coherent model. But the zipfs law plot leaves something to be desired.
+# could this be because I'm not using the zpif's law to make beta? Could it also
+# be that I need to have a bigger vocabulary to simulate, then cut it down?
+
+# Anothe update: using zipf's law + 0.01 * V leads to much improved zipf plot.
+# Also give acceptable R-squared. Coherence sucks for it and the colSums version though.
+# That may have more to do with the coherence calculation which bombs if topics
+# are full of stop words
+
+# yet more update: doubling the number of topics pushes out the tail drop a bit
+# but so far all simulated DTMs are way sparser than the data itself
+
+# turns out that an asymmetric alpha results in more coherent topics learned from tidylda
 
 library(tmsamples)
 library(tidylda)
@@ -24,7 +40,7 @@ d <- textmineR::CreateDtm(
   stopword_vec = c()
 )
 
-beta <- colSums(d) / sum(d) * 1 * ncol(d)
+beta <- colSums(d) / sum(d) * 0.01 * ncol(d)
 
 # beta <- generate_zipf(ncol(d), magnitude = sum(d), zipf_par = 1.1)
 
@@ -80,14 +96,14 @@ lda_wrong <- tidylda(
 lda_wrong
 
 # 
-# lda_right <- tidylda(
-#   data = dsim2,
-#   k = 25,
-#   iterations = 200,
-#   burnin = 150,
-#   alpha = 0.1,
-#   beta = beta,
-#   calc_likelihood = TRUE,
-#   calc_r2 = TRUE,
-#   verbose = TRUE
-# )
+lda_right <- tidylda(
+  data = dsim2,
+  k = 25,
+  iterations = 200,
+  burnin = 150,
+  alpha = alpha,
+  beta = beta,
+  calc_likelihood = TRUE,
+  calc_r2 = TRUE,
+  verbose = TRUE
+)
