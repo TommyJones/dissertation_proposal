@@ -105,9 +105,11 @@ Because probabilistic topic models are latent variable models, and they model a 
 
 Simulation studies involve gnerating pseudo random data using a known stochastic process. Simulation studies have a long history in the field of statistics. [cite Ripley 1987, Hoaglin and Andrews 1975, Feiveson 2002] The purpose is to study data where the data generating mechanism is known. "A key strength of simulation studies is the ability to understand the behavior of statistical methods because some 'truth' [...] is known from teh process of generating the data." [cite morris et al. 2019]
 
+[Establish vocabulary and approach to simulation studies here: estimator vs estimand, properties, etc.]
+
 Probailistic topic models are excellent candidates for study through simulation. They model an explicit data generating process through latent variables. The resulting data are observed, but the generating variables of interest are not. By simulating data through the process modeled by a topic model, one can obtain a "ground truth". One can then interrogate a topic model as an estimator in terms of desireable statistical properties and measure its sensitivity to properties of the input data. 
 
-Simulation studies are indeed used to study probabilistic topic models.
+Simulation studies are indeed used to study probabilistic topic models. These studies usually use synthetic data sets to augment study of real data sets, rather than studying the synthetic data primarily. They tend to take one of two forms: either simulated data are drawn from models specified with priors commonly adopted for model fitting [Wallach dissertation] or drawn from the posterior of a model fit on real data [JBG + Mimno].
 
 Yet to be a valid proxy of human language, such simulated data should have the same gross statistical properties of human language. To this end, Zipf's law is paramount.
 
