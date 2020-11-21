@@ -1,0 +1,102 @@
+---
+title: "Memorable Title"
+
+author:
+  - Tommy Jones^[George Mason University Dept. of Computational and Data Sciences, tjones42@gmu.edu]
+  
+abstract: |
+  This is the abstract.
+
+  It consists of two paragraphs.
+bibliography: [topicmodels.bib,simulation.bib,zipf.bib,manual_entry.bib]
+# csl: acm-sig-proceedings.csl
+# output: rticles::acm_article
+
+output: 
+  pdf_document:
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+Probabilistic topic models are widely used latent variable models of language. Popularized in 2002 by latent Dirichlet allocation (LDA) [@blei2002lda] many related models have been developed, for example [@blei2007ctm], [@roberts2013stm], [@nguyen2015supervisedtm], and more. These models share common characteristics and estimate the probability of topics within contexts and tokens within topics.[^precisedef] Even today LDA remains one of the most popular topic models, and one of the simplest.
+
+[^precisedef]: Technically, probabilistic topic models estimate the probability that any token was sampled from a topic given the context and the probability of sampling each specific token given the topic, respectively.
+
+Topic models have been applied to a variety of tasks. These tasks include information retreival [@wei2007ir], analysis of historical texts [@newman2006news], machine translation and related tasks [@vulic2011translation], and more. In recent years, the machine learning community has focused more on deep architectures typified by text embeddings [@groheembeddingtheory] and pre-train then fine tune transformers, for example [@hendersonunstoppable]. Yet probabilistic topic models have remained popular analytical methods in fields such as computational social science [@roberts2016textmodel] and the digital humanities [@erlin2017].[^futureproof]
+
+[^futureproof]: As we will see in Section 3, probabilistic topic models can share similar conceptual frameworks with newer methods.
+
+In spite of their sustained popularity, probabilistic topic models remain challenging to use. Some of these challenges are conceptual. Probabilistic topic models have user-set tuning parameters, called "hyperparameters" in the machine learning literature, whose optimal settings are not obvious. Moreover, because probabilistic topic models estimate parameters for a process that is _not_ how people write. Because of this, there is no ground truth against which to compare models for a sense of "correctness" that researchers can use to develop modeling strategies and metrics to guard against pathological misspecification.
+
+In some cases, challenges are more practical. Software implementing probabilistic topic models can be challenging to use and offer limited functionality. In particular, those that employ probabilistic topic models in industry often have a need to update models based on new or updated data. To date, there has been little research on transfer learning for probabilistic topic models. No off-the-shelf software implements such a paradigm. The result is that applied practicioners face an unpleasant tradeoff. Either models go stale or they must be re-trained from scratch. In the former case, innacuracies creep in over time. In the latter case, topics are re-initialized at random, breaking continuity with the old model.
+
+What is more, transfer learning is becoming paramount to modern machine learning for natural language. The last few years have seen an explosion of "transformer" models which rely on a paradigm of training a "base" model on an unsupervised or semi-supervised task. These base models tend to use as much language data as possible. Then the base model is transfered to a smaller dataset on a narrow supervised task. The result has been an impressive increase in performance on many standard NLP benchmarks. No such paradigm exists for probabilistic topic models.
+
+In an attempt to address these shortcomings, I propose three research studies, each building on the last. In each, I will focus on Latent Dirichlet Allocation (LDA) for its simplicity and popularity. LDA is closely related to other probabilistic topic models. This enables a natural extension of this research to other probabilistic topic models.
+
+The first study relates some empirical laws of language to LDA as a generative process. This enables a principled method for conducting simulation studies of LDA. Simulation studies are a natural means for imposing a sense of "correctness" in studying statistical models [@morrissimulationstudies]. Afer linking LDA to empirical laws of language, this first study will use a combination of simulations and analytical derivations to address hyperparameter settings for LDA. The objective is not to develop methods for finding the "correct" model on real data, as no such model exists. Rather it is to set up guardrails to avoid models that are pathologically misspecified where an obviously better model does exist. 
+
+The second study develops methods for transfer learning in LDA. This enables the applied practicioner to update models with new data, preservig continuity with previously-trained models. It also takes a first step extending LDA towards the state of the art "pre-train then fine tune" paradigm currently popular in natural language processing. 
+
+The final study introduces `tidylda`, a software package for the R programming language [@rlang]. `tidylda` integrates into a wider programming paradigm in the R language known as "tidy" programming. It also implements several novel methods for and related to LDA, including transfer learning.
+
+The remainder of this document is organized as follows:
+
+* Section 2 gives a brief history of embedding models for text, a broader class of models encompassing probabilistic topic models.
+* Section 3 re-states the formulation for LDA, compares it to related models, and discusses training algorithms for LDA.
+* Section 4 explores current approaches for evaluating and studying probabilistic topic models, with a focus on LDA.
+* Section 5 gives an overview of simulation studies in statistics broadly and how they have been applied to probabilistic topic models.
+* Section 6 reviews some empirical laws of language that a synthetic data set of language must honor to be considered a valid simulation of natural language.
+* Section 7 outlines the proposed dissertation studies
+
+# A Brief History of Embedding Models for Text
+ 
+# Latent Dirichlet Allocation (and Friends)
+ 
+ 
+# Proposed Studies
+ 
+## Simulation Studies for LDA
+
+### Background
+Using simulated data to study LDA is not new [cite]. However, the degree to which it can approximate the true statistical properties of human language has not been closely examined. 
+
+#### Evaluation Methods for Probabilistic Topic Models
+ 
+####  Creating Ground Truth with Simulation Studies
+ 
+####  Emperical Laws of Language
+
+
+### Approach
+
+This study has three goals:
+
+1. To simulate data using LDA's generative process that is statisically as close to human language as possible,
+2. To quantify the degree to which simulated data does and does not statistically approximate human-generated language data, and
+3. To study simulated corpora to inform modeling decisions, such as hyperparameter selection. 
+
+One must have a baseline of real data for comparison. Then one can measure the accuracy of aggregate statistical patterns between the simulated and actual data. Individual patterns &mdash e.g. counts of single tokens, counts of each tokens within a document, correlation between any two specific documents, etc. &mdash cannot be captured. Simulations provide population-level data patterns, but not meaningful representations of individual data points.
+
+The above compells two needs for this study. The first need is a sample of corpora that demonstrate the ability of simulations to generalize broadly, not work for just one or a few languages or contexts. This does not need to represent "language" as a whole. Rather it must be diverse enough to demonstrate that simulated data can capture patterns across languages and contexts. The second need is for a set of representative population-level statistics sufficent to describe a corpus. The degree to which simulations can represent the sufficient statistics of real corpora is key to this study, particularly the first two goals above.
+
+
+
+### Expected Results
+words
+
+## Transfer Learning for LDA
+ 
+## Introducing `tidylda` for R
+
+words words words
+
+# Expected Timeline
+
+\newpage{}
+
+# References

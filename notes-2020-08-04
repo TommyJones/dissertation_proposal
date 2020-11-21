@@ -1,0 +1,24 @@
+Brain dump at teh end of the night 2020-08-04
+
+Is LDA consistent? When correctly specified, does it converge to the true model as sample size (and perhaps iterations of the gibbs sampler) increase?
+
+What is the effect of misspecifying k? Too big? Too small? POsterior contraction analysis paper may be of use here
+
+What is effect of misspecifying alpha? Magnitude too big/small. Shape wrong.
+What is the effect of misspecifying eta? Same deal but also non-zipfian vs. zipfian.
+
+What is the effect of corpus composition? Number of documents, number of tokens, document lengths and distributions thereof.
+
+Does LDA have the properties under 3.1 Aims of Morris et al. 2019?
+- consistency of estimator to estimand?
+- consistent estimate of variance of estimand?
+- CIs have property of 100(1 - a)% contain estimand? - Do I even care b/c Bayesian?
+- Is LDA efficient estimator?
+- B/C LDA generates the data, would these even matter?
+
+Need experimental design. "Factorial Design"
+- Over corpus characteristics in demonstrating that simulations can get close to human language
+- Over LDA hyperparameters and plausible ranges they can take on, this includes also document lengths and their distributions, and vocabulary sizes (seen and unseen in a given sample)
+
+To the second point, get an estimate of plausible ranges based on points on pareto frontier of SigOpt
+
