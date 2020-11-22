@@ -20,17 +20,20 @@ knitr::opts_chunk$set(echo = TRUE)
 # Introduction
 Human language is one of the most information rich sources of data that exists. Language is literally the medium humans use to communicate information to each other. And in an increasingly digitally connected world, the amount of text available for analyis has exploded. Improvements in computing power and algorithmic advances has driven staggering progress in machine translation, automatic summarization, information extraction and more. 
 
-Yet in spite of these advances, machine learning for natural language processing (NLP) remains a largely ad-hoc field. Save a handful of empirical laws, there is little statistical theory guiding the modeling of textual data. What theory does exist generally does not inform specification or use of statistical or machine learning models of text. Instead, the field has relied on icreasingly complex models, requiring tremendous computational power, to drive these advances. Is it possible that statistical theory cold
+Current state of the art natural language processing (NLP) models belong to a class of deep neural networks called "transformers". Famous examples of tranformers include ERNiE (cite), BERT (cite), XLNet (cite), GPT-2 (cite), GPT-3 (cite), and more. Transformers operate on a transfer learning paradigm called "pre-train then fine tune". In the pre-training step, a "base" model is trained on an unsupervised or self-supervised (e.g. predict the next word) task with a very large volume of textual data. The fine tuning step involves replacing the output layer of the base model with a task specific output layer. Then a much smaller set of task-specific training data is used to update the weights of interior layers and lern new weights for the output layer. 
 
-Figure 1 depicts the number of parameters in the currently most-popular class of machine learning models of text, known as "transformers". Transformers are named after the core neural network architecture that drives them. (cite "attention is all you need" paper) These deep neural network models are not only complex, they are expensive to train. GPT-3 (not pictured), the latest and greatest member of this class has approxmiately 17.5 billion parameters and cost an estimated $12 million to train. (cite) 
+This approach has obvious advantages. In terms of raw accuracy for benchmark task-specific objectives, transformers reign supreme. It seems, also, that one can get acceptable results with fewer labeled examples when starting with a base model than using traditional end-to-end models. (cite) 
+
+Yet in spite of these advances, machine learning for NLP remains a largely ad-hoc field. Save a handful of empirical laws, there is little statistical theory guiding the modeling of textual data. What theory does exist generally does not inform specification or use of statistical or machine learning models of text. Instead, the field has relied on icreasingly complex models, requiring tremendous computational power, to drive these advances. 
+
+Figure 1 depicts the number of parameters in several famous examples of transformers. These deep neural network models are not only complex, they are expensive to train. GPT-3 (not pictured), the latest and greatest member of this class has approxmiately 17.5 billion parameters and cost an estimated $12 million to train. (cite) 
 
 ![]("figures/TurningNGL_Model__1400x788.png")
 [https://www.microsoft.com/en-us/research/blog/turing-nlg-a-17-billion-parameter-language-model-by-microsoft/](https://www.microsoft.com/en-us/research/blog/turing-nlg-a-17-billion-parameter-language-model-by-microsoft/)
 
-Transformers
+In addition to increasing complexity and cost, there is some evidence that the marginal returns to research in several subfields of machine learning are declining. (cite) When progress in one direction begins to slow, it may be time to push in another direction. Perhaps it is time to revisit statisitcal theory?
 
-
-I propose revisiting a model that has become less popular in machine learning circles, Latent Dirichlet Allocation (LDA). Why? With the above comments in mind, LDA has some desireable properties. It models a data generating process which may be linked to the empirical laws of language. This property makes LDA, and related models, candidates for helping to develop a more robust statistical theory for modeling language. Akin to what we have for linear regression, statistical theory helps guide modeling decisions. This often results in models that are accurate, parsimonious, and interpretable. Modern NLP models acheive only the first. And while LDA may be less popular at the cutting edge of machine learning, it and its variants are still popular in fields such as computational social science [@roberts2016textmodel] and the digital humanities [@erlin2017]. Finally, I believe that I have developed method of transfer learning for LDA, allowing it to be used in a pre-train then fine tune paradigm similar to that which is employed in transformer models. 
+I propose reexamining a model that has become less popular in machine learning circles, Latent Dirichlet Allocation (LDA). Why? With the above comments in mind, LDA has some desireable properties. It models a data generating process which may be linked to the empirical laws of language. This property makes LDA, and related models, candidates for helping to develop a more robust statistical theory for modeling language. Akin to what we have for linear regression, statistical theory helps guide modeling decisions. This often results in models that are accurate, parsimonious, and interpretable. Modern NLP models acheive only the first. And while LDA may be less popular at the cutting edge of machine learning, it and its variants are still popular in fields such as computational social science [@roberts2016textmodel] and the digital humanities [@erlin2017]. Finally, I believe that I have developed method of transfer learning for LDA, allowing it to be used in a pre-train then fine tune paradigm similar to that which is employed in transformer models. 
 
 To complete the requirements of my dissertation, I propose making three contributions. The first is a theoretical study of the LDA data generating process (LDA-DGP). The second is a study exploring transfer learning for LDA. The third is a software package for the R language that draws on my research and a framework known as the "tidyverse" (cite) to make a principled, flexible, performant, and user-friendly interface for training and using LDA models.
 
@@ -103,7 +106,6 @@ where $f_r$ is a word’s frequency, $r$ is its frequency-rank, and $b$ is a fre
   P(f_r|b) &\propto f_r ^{-b}
 \end{align}
 
-
 which states that the probability of observing a given word frequency is subject to a decreasing power law. The two parameterizations may be mapped to each other where $b = 1 + a^{-1}$. See Figure [X] (a) for a graphical depiction of Zipf’s law.
 
 Zipf's law has also been extended into the Zipf-Mandlebrodt law to provide a better fit for high frequency words. The Zipf-Mandlebrodt law is often parameterized by a discrete probability distribution.
@@ -144,13 +146,13 @@ where $V$ is the number of unique words (vocabulary size), $N$ is the total numb
 ## Approach and Preliminary Results
 
 
-# Software: \{tidylda\}, an R Package
+# Software: _tidylda_, an R Package
 ## Background
 - What other LDA packages exist and why do we need a new one
   - User friendly, speed, principled defaults
 - "Tidyverse" and "tidy text mining": theoretical framework
 
-## Current State of \{tidylda\}
+## Current State of _tidylda_
 
 ## Anticipated Contributions
 
