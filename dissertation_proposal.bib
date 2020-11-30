@@ -1,210 +1,469 @@
-@inproceedings{asuncion2009smoothing,
-  title={On smoothing and inference for topic models},
-  author={Asuncion, Arthur and Welling, Max and Smyth, Padhraic and Teh, Yee Whye},
-  booktitle={Proceedings of the twenty-fifth conference on uncertainty in artificial intelligence},
-  pages={27--34},
-  year={2009},
-  organization={AUAI Press}
+@article{hayashasymptoticlda, 
+title = {{The Exact Asymptotic Form of Bayesian Generalization Error in Latent Dirichlet Allocation}}, 
+author = {Hayashi, Naoki}, 
+journal = {arXiv}, 
+eprint = {2008.01304}, 
+abstract = {{Latent Dirichlet allocation (LDA) obtains essential information from data by using Bayesian inference. It is applied to knowledge discovery via dimension reducing and clustering in many fields. However, its generalization error had not been yet clarified since it is a singular statistical model where there is no one to one map from parameters to probability distributions. In this paper, we give the exact asymptotic form of its generalization error and marginal likelihood, by theoretical analysis of its learning coefficient using algebraic geometry. The theoretical result shows that the Bayesian generalization error in LDA is expressed in terms of that in matrix factorization and a penalty from the simplex restriction of LDA's parameter region.}}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-08-07/2008.01304.pdf}, 
+year = {2020}
 }
-
-@article{blei2003latent,
-  title={Latent dirichlet allocation},
-  author={Blei, David M and Ng, Andrew Y and Jordan, Michael I},
-  journal={Journal of machine Learning research},
-  volume={3},
-  number={Jan},
-  pages={993--1022},
-  year={2003}
+@inproceedings{null, 
+author = {Pietilainen, Pirkko}, 
+title = {{Properties of Semantic Coherence Measures - Case of Topic Models}}, 
+booktitle = {SEMAPRO 2020 : The Fourteenth International Conference on Advances in Semantic Processing}, 
+isbn = {9781612088136}, 
+local-url = {file://localhost/Users/tommy/Documents/Papers%20Library/semapro_2020_2_30_30015.pdf}, 
+year = {2020}
 }
-
-@inproceedings{blei2006dynamic,
-  title={Dynamic topic models},
-  author={Blei, David M and Lafferty, John D},
-  booktitle={Proceedings of the 23rd international conference on Machine learning},
-  pages={113--120},
-  year={2006},
-  organization={ACM}
+@inproceedings{wangneuraltopics, 
+author = {Wang, Xinyi and Yang, Yi}, 
+title = {{Neural Topic Model with Attention for Supervised Learning}}, 
+booktitle = {Proceedings of the 23 rd International Conference on Artifi- cial Intelligence and Statistics (AISTATS) 2020}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-23/wang20c.pdf}, 
+year = {2020}
 }
-
-@incollection{blei2009topic,
-  title={Topic models},
-  author={Blei, David M and Lafferty, John D},
-  booktitle={Text Mining},
-  pages={101--124},
-  year={2009},
-  publisher={Chapman and Hall/CRC}
+@article{undefined, 
+title = {{Language Models are Few-Shot Learners}}, 
+author = {Brown, Tom B and Mann, Benjamin and Ryder, Nick and Subbiah, Melanie and Kaplan, Jared and Dhariwal, Prafulla and Neelakantan, Arvind and Shyam, Pranav and Sastry, Girish and Askell, Amanda and Agarwal, Sandhini and Herbert-Voss, Ariel and Krueger, Gretchen and Henighan, Tom and Child, Rewon and Ramesh, Aditya and Ziegler, Daniel M and Wu, Jeffrey and Winter, Clemens and Hesse, Christopher and Chen, Mark and Sigler, Eric and Litwin, Mateusz and Gray, Scott and Chess, Benjamin and Clark, Jack and Berner, Christopher and McCandlish, Sam and Radford, Alec and Sutskever, Ilya and Amodei, Dario}, 
+journal = {arXiv}, 
+eprint = {2005.14165}, 
+abstract = {{Recent work has demonstrated substantial gains on many NLP tasks and benchmarks by pre-training on a large corpus of text followed by fine-tuning on a specific task. While typically task-agnostic in architecture, this method still requires task-specific fine-tuning datasets of thousands or tens of thousands of examples. By contrast, humans can generally perform a new language task from only a few examples or from simple instructions - something which current NLP systems still largely struggle to do. Here we show that scaling up language models greatly improves task-agnostic, few-shot performance, sometimes even reaching competitiveness with prior state-of-the-art fine-tuning approaches. Specifically, we train GPT-3, an autoregressive language model with 175 billion parameters, 10x more than any previous non-sparse language model, and test its performance in the few-shot setting. For all tasks, GPT-3 is applied without any gradient updates or fine-tuning, with tasks and few-shot demonstrations specified purely via text interaction with the model. GPT-3 achieves strong performance on many NLP datasets, including translation, question-answering, and cloze tasks, as well as several tasks that require on-the-fly reasoning or domain adaptation, such as unscrambling words, using a novel word in a sentence, or performing 3-digit arithmetic. At the same time, we also identify some datasets where GPT-3's few-shot learning still struggles, as well as some datasets where GPT-3 faces methodological issues related to training on large web corpora. Finally, we find that GPT-3 can generate samples of news articles which human evaluators have difficulty distinguishing from articles written by humans. We discuss broader societal impacts of this finding and of GPT-3 in general.}}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/2020-11-22/2005.14165.pdf}, 
+year = {2020}
 }
-
-@inproceedings{buntine2009estimating,
-  title={Estimating likelihoods for topic models},
-  author={Buntine, Wray},
-  booktitle={Asian Conference on Machine Learning},
-  pages={51--64},
-  year={2009},
-  organization={Springer}
+@inproceedings{riegerldaprototype, 
+author = {Rieger, Jonas and Rahnenführer, Jörg and Jentsch, Carsten}, 
+title = {{Improving Latent Dirichlet Allocation: On Reliability of the Novel Method LDAPrototype}}, 
+booktitle = {Natural Language Processing and Information Systems, 25th International Conference on Applications of Natural Language to Information Systems, NLDB 2020, Saarbrücken, Germany, June 24–26, 2020, Proceedings}, 
+isbn = {9783030513092}, 
+doi = {10.1007/978-3-030-51310-8\_11}, 
+abstract = {{A large number of applications in text data analysis use the Latent Dirichlet Allocation (LDA) as one of the most popular methods in topic modeling. Although the instability of the LDA is mentioned sometimes, it is usually not considered systematically. Instead, an LDA is often selected from a small set of LDAs using heuristic means or human codings. Then, conclusions are often drawn based on the to some extent arbitrarily selected model. We present the novel method LDAPrototype, which takes the instability of the LDA into account, and show that by systematically selecting an LDA it improves the reliability of the conclusions drawn from the result and thus provides better reproducibility. The improvement coming from this selection criterion is unveiled by applying the proposed methods to an example corpus consisting of texts published in a German quality newspaper over one month.}}, 
+pages = {118--125}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-23/Rieger2020_Chapter_ImprovingLatentDirichletAlloca.pdf}, 
+year = {2020}
 }
-
-@inproceedings{chang2009reading,
-  title={Reading tea leaves: How humans interpret topic models},
-  author={Chang, Jonathan and Gerrish, Sean and Wang, Chong and Boyd-Graber, Jordan L and Blei, David M},
-  booktitle={Advances in neural information processing systems},
-  pages={288--296},
-  year={2009}
+@article{maennelexactmarginal, 
+title = {{Exact marginal inference in Latent Dirichlet Allocation}}, 
+author = {Maennel, Hartmut}, 
+journal = {arXiv}, 
+eprint = {2004.00115}, 
+abstract = {{Assume we have potential "causes" \$z\textbackslashin Z\$, which produce "events" \$w\$ with known probabilities \$\textbackslashbeta(w|z)\$. We observe \$w\_1,w\_2,...,w\_n\$, what can we say about the distribution of the causes? A Bayesian estimate will assume a prior on distributions on \$Z\$ (we assume a Dirichlet prior) and calculate a posterior. An average over that posterior then gives a distribution on \$Z\$, which estimates how much each cause \$z\$ contributed to our observations. This is the setting of Latent Dirichlet Allocation, which can be applied e.g. to topics "producing" words in a document. In this setting usually the number of observed words is large, but the number of potential topics is small. We are here interested in applications with many potential "causes" (e.g. locations on the globe), but only a few observations. We show that the exact Bayesian estimate can be computed in linear time (and constant space) in \$|Z|\$ for a given upper bound on \$n\$ with a surprisingly simple formula. We generalize this algorithm to the case of sparse probabilities \$\textbackslashbeta(w|z)\$, in which we only need to assume that the tree width of an "interaction graph" on the observations is limited. On the other hand we also show that without such limitation the problem is NP-hard.}}, 
+year = {2020}
 }
-
-@book{cox1989analysis,
-  title={Analysis of Binary Data},
-  author={Cox, DR and Snell, EJ},
-  volume={32},
-  year={1989},
-  publisher={CRC Press}
+@inproceedings{kalepallicompareldalsa, 
+author = {Kalepalli, Yaswanth and Tasneem, Shaik and Teja, Pasupuleti Durga Phani and Manne, Dr. Suneetha}, 
+title = {{Effective Comparison of LDA with LSA for  Topic Modelling}}, 
+booktitle = {Proceedings of the International Conference on Intelligent Computing and Control Systems}, 
+isbn = {978-1-7281-4876-2}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-23/09120888.pdf}, 
+year = {2020}
 }
-
-@inproceedings{girolami2003equivalence,
-  title={On an equivalence between PLSI and LDA},
-  author={Girolami, Mark and Kab{\'a}n, Ata},
-  booktitle={SIGIR},
-  volume={3},
-  pages={433--434},
-  year={2003}
+@article{10.1016/j.infsof.2020.106411, 
+title = {{A Systematic Comparison of Search-Based Approaches for LDA Hyperparameter Tuning}}, 
+author = {Panichella, Annibale}, 
+journal = {Information and Software Technology}, 
+issn = {0950-5849}, 
+doi = {10.1016/j.infsof.2020.106411}, 
+abstract = {{Context:Latent Dirichlet Allocation (LDA) has been successfully used in the literature to extract topics from software documents and support developers in various software engineering tasks. While LDA has been mostly used with default settings, previous studies showed that default hyperparameter values generate sub-optimal topics from software documents. Objective: Recent studies applied meta-heuristic search (mostly evolutionary algorithms) to configure LDA in an unsupervised and automated fashion. However, previous work advocated for different meta-heuristics and surrogate metrics to optimize. The objective of this paper is to shed light on the influence of these two factors when tuning LDA for SE tasks. Method:We empirically evaluated and compared seven state-of-the-art meta-heuristics and three alternative surrogate metrics (i.e., fitness functions) to solve the problem of identifying duplicate bug reports with LDA. The benchmark consists of ten real-world and open-source projects from the Bench4BL dataset. Results:Our results indicate that (1) meta-heuristics are mostly comparable to one another (except for random search and CMA-ES), and (2) the choice of the surrogate metric impacts the quality of the generated topics and the tuning overhead. Furthermore, calibrating LDA helps identify twice as many duplicates than untuned LDA when inspecting the top five past similar reports. Conclusion:No meta-heuristic and/or fitness function outperforms all the others, as advocated in prior studies. However, we can make recommendations for some combinations of meta-heuristics and fitness functions over others for practical use. Future work should focus on improving the surrogate metrics used to calibrate/tune LDA in an unsupervised fashion.}}, 
+pages = {106411}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/2020-09-14/1-s2.0-S0950584920300069-main.pdf}, 
+year = {2020}
 }
-
-@article{goldwater2011producing,
-  title={Producing power-law distributions and damping word frequencies with two-stage language models},
-  author={Goldwater, Sharon and Griffiths, Thomas L and Johnson, Mark},
-  journal={Journal of Machine Learning Research},
-  volume={12},
-  number={Jul},
-  pages={2335--2382},
-  year={2011}
+@article{morrissimulationstudies, 
+title = {{Using simulation studies to evaluate statistical methods}}, 
+author = {Morris, Tim P. and White, Ian R. and Crowther, Michael J.}, 
+journal = {Statistics in Medicine}, 
+issn = {0277-6715}, 
+doi = {10.1002/sim.8086}, 
+pmid = {30652356}, 
+abstract = {{Simulation studies are computer experiments that involve creating data by pseudo‐random sampling. A key strength of simulation studies is the ability to understand the behavior of statistical methods because some “truth” (usually some parameter/s of interest) is known from the process of generating the data. This allows us to consider properties of methods, such as bias. While widely used, simulation studies are often poorly designed, analyzed, and reported. This tutorial outlines the rationale for using simulation studies and offers guidance for design, execution, analysis, reporting, and presentation. In particular, this tutorial provides a structured approach for planning and reporting simulation studies, which involves defining aims, data‐generating mechanisms, estimands, methods, and performance measures (“ADEMP”); coherent terminology for simulation studies; guidance on coding simulation studies; a critical discussion of key performance measures and their estimation; guidance on structuring tabular and graphical presentation of results; and new graphical presentations. With a view to describing recent practice, we review 100 articles taken from Volume 34 of Statistics in Medicine, which included at least one simulation study and identify areas for improvement.}}, 
+pages = {2074--2102}, 
+number = {11}, 
+volume = {38}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-08-03/sim.8086.pdf}, 
+year = {2019}
 }
-
-@article{griffiths2004finding,
-  title={Finding scientific topics},
-  author={Griffiths, Thomas L and Steyvers, Mark},
-  journal={Proceedings of the National academy of Sciences},
-  volume={101},
-  number={suppl 1},
-  pages={5228--5235},
-  year={2004},
-  publisher={National Acad Sciences}
+@article{10.1145/3241036, 
+title = {{The seven tools of causal inference, with reflections on machine learning}}, 
+author = {Pearl, Judea}, 
+journal = {Communications of the ACM}, 
+issn = {0001-0782}, 
+doi = {10.1145/3241036}, 
+abstract = {{The kind of causal inference seen in natural human thought can be "algorithmitized" to help produce human-level machine intelligence.}}, 
+pages = {54--60}, 
+number = {3}, 
+volume = {62}, 
+local-url = {file://localhost/Users/tommy/Downloads/r481.pdf}, 
+year = {2019}
 }
-
-@Misc{textminer,
-author =   {Tommy Jones},
-title =    {textmineR},
-howpublished = {\url{https://www.rtextminer.com}},
-year = {2000--2004}
+@article{mazaruralowresource, 
+title = {{Semantic representations for under-resourced languages}}, 
+author = {Mazarura, Jocelyn and Waal, Alta de and Villiers, Pieter de}, 
+doi = {10.1145/3351108.3351133}, 
+pages = {1--10}, 
+local-url = {file://localhost/Users/tommy/Documents/Papers%20Library/a24-mazarura.pdf}, 
+year = {2019}
 }
-
-
-@inproceedings{lau2014machine,
-  title={Machine reading tea leaves: Automatically evaluating topic coherence and topic model quality},
-  author={Lau, Jey Han and Newman, David and Baldwin, Timothy},
-  booktitle={Proceedings of the 14th Conference of the European Chapter of the Association for Computational Linguistics},
-  pages={530--539},
-  year={2014}
+@unpublished{ruderneuraltransfer, 
+author = {Ruder, Sebastian}, 
+title = {{Neural Transfer Learning for Natural Language Processing}}, 
+address = {NATIONAL UNIVERSITY OF IRELAND, GALWAY}, 
+type = {PhD Thesis}, 
+year = {2019}
 }
-
-@book{mcfadden1977application,
-  title={An application of diagnostic tests for the independence from irrelevant alternatives property of the multinomial logit model},
-  author={McFadden, Daniel and Tye, William B and Train, Kenneth},
-  year={1977},
-  publisher={Institute of Transportation Studies, University of California}
+@article{dosschoosek, 
+title = {{Inference for the Number of Topics in the Latent Dirichlet Allocation Model via Bayesian Mixture Modeling}}, 
+author = {Chen, Zhe and Doss, Hani}, 
+journal = {JOURNAL OF COMPUTATIONAL AND GRAPHICAL STATISTICS}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/10160128.pdf}, 
+year = {2019}
 }
-
-@inproceedings{mimno2011optimizing,
-  title={Optimizing semantic coherence in topic models},
-  author={Mimno, David and Wallach, Hanna M and Talley, Edmund and Leenders, Miriam and McCallum, Andrew},
-  booktitle={Proceedings of the conference on empirical methods in natural language processing},
-  pages={262--272},
-  year={2011},
-  organization={Association for Computational Linguistics}
+@article{takahashiscaling, 
+title = {{Evaluating Computational Language Models with Scaling Properties of Natural Language}}, 
+author = {Takahashi, Shuntaro and Tanaka-Ishii, Kumiko}, 
+journal = {Computational Linguistics}, 
+issn = {0891-2017}, 
+doi = {10.1162/coli\_a\_00355}, 
+abstract = {{In this article, we evaluate computational models of natural language with respect to the universal statistical behaviors of natural language. Statistical mechanical analyses have revealed that natural language text is characterized by scaling properties, which quantify the global structure in the vocabulary population and the long memory of a text. We study whether five scaling properties (given by Zipf’s law, Heaps’ law, Ebeling’s method, Taylor’s law, and long-range correlation analysis) can serve for evaluation of computational models. Specifically, we test n-gram language models, a probabilistic context-free grammar, language models based on Simon/Pitman-Yor processes, neural language models, and generative adversarial networks for text generation. Our analysis reveals that language models based on recurrent neural networks with a gating mechanism (i.e., long short-term memory; a gated recurrent unit; and quasi-recurrent neural networks) are the only computational models that can reproduce the long memory behavior of natural language. Furthermore, through comparison with recently proposed model-based evaluation methods, we find that the exponent of Taylor’s law is a good indicator of model quality.}}, 
+pages = {481--513}, 
+number = {3}, 
+volume = {45}, 
+local-url = {file://localhost/Users/tommy/Documents/Papers%20Library/Takahashi-Evaluating%20Computational%20Language%20Models%20with%20Scaling%20Properties%20of%20Natural%20Language-2019-Computational%20Linguistics.pdf}, 
+year = {2019}
 }
-
-@book{neter1996applied,
-  title={Applied linear statistical models},
-  author={Neter, John and Kutner, Michael H and Nachtsheim, Christopher J and Wasserman, William},
-  volume={4},
-  year={1996},
-  publisher={Irwin Chicago}
+@article{undefined, 
+title = {{ERNIE: Enhanced Representation through Knowledge Integration}}, 
+author = {Sun, Yu and Wang, Shuohuan and Li, Yukun and Feng, Shikun and Chen, Xuyi and Zhang, Han and Tian, Xin and Zhu, Danxiang and Tian, Hao and Wu, Hua}, 
+journal = {arXiv}, 
+eprint = {1904.09223}, 
+abstract = {{We present a novel language representation model enhanced by knowledge called ERNIE (Enhanced Representation through kNowledge IntEgration). Inspired by the masking strategy of BERT, ERNIE is designed to learn language representation enhanced by knowledge masking strategies, which includes entity-level masking and phrase-level masking. Entity-level strategy masks entities which are usually composed of multiple words.Phrase-level strategy masks the whole phrase which is composed of several words standing together as a conceptual unit.Experimental results show that ERNIE outperforms other baseline methods, achieving new state-of-the-art results on five Chinese natural language processing tasks including natural language inference, semantic similarity, named entity recognition, sentiment analysis and question answering. We also demonstrate that ERNIE has more powerful knowledge inference capacity on a cloze test.}}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/2020-11-22/1904.09223.pdf}, 
+year = {2019}
 }
-
-@inproceedings{nguyen2014sometimes,
-  title={Sometimes average is best: The importance of averaging for prediction using MCMC inference in topic modeling},
-  author={Nguyen, Viet-An and Boyd-Graber, Jordan and Resnik, Philip},
-  booktitle={Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing},
-  pages={1752--1757},
-  year={2014}
+@phdthesis{undefined, 
+title = {{A Principled Approach to the Evaluation of Topic Modeling Algorithms}}, 
+author = {Shi, Hanyu}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/2020-11-16/principled%20approach.pdf}, 
+year = {2019}
 }
-
-@article{roberts2014structural,
-  title={Structural topic models for open-ended survey responses},
-  author={Roberts, Margaret E and Stewart, Brandon M and Tingley, Dustin and Lucas, Christopher and Leder-Luis, Jetson and Gadarian, Shana Kushner and Albertson, Bethany and Rand, David G},
-  journal={American Journal of Political Science},
-  volume={58},
-  number={4},
-  pages={1064--1082},
-  year={2014},
-  publisher={Wiley Online Library}
+@article{undefined, 
+title = {{A new evaluation framework for topic modeling algorithms based on synthetic corpora}}, 
+author = {Shi, Hanyu and Gerlach, Martin and Diersen, Isabel and Downey, Doug and Amaral, Luis A N}, 
+journal = {arXiv}, 
+eprint = {1901.09848}, 
+abstract = {{Topic models are in widespread use in natural language processing and beyond. Here, we propose a new framework for the evaluation of probabilistic topic modeling algorithms based on synthetic corpora containing an unambiguously defined ground truth topic structure. The major innovation of our approach is the ability to quantify the agreement between the planted and inferred topic structures by comparing the assigned topic labels at the level of the tokens. In experiments, our approach yields novel insights about the relative strengths of topic models as corpus characteristics vary, and the first evidence of an "undetectable phase" for topic models when the planted structure is weak. We also establish the practical relevance of the insights gained for synthetic corpora by predicting the performance of topic modeling algorithms in classification tasks in real-world corpora.}}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/2020-11-16/shi19a.pdf}, 
+year = {2019}
 }
-
-@article{rosner2014evaluating,
-  title={Evaluating topic coherence measures},
-  author={Rosner, Frank and Hinneburg, Alexander and R{\"o}der, Michael and Nettling, Martin and Both, Andreas},
-  journal={arXiv preprint arXiv:1403.6397},
-  year={2014}
+@article{george2018hyperparameters, 
+title = {{Principled Selection of Hyperparameters in the Latent Dirichlet Allocation Model}}, 
+author = {George, Clint P. and Doss, Hani}, 
+journal = {Journal of Machine Learnign Research}, 
+journaltitle = {Journal of Machine Learnign Research}, 
+pages = {5937--5974}, 
+number = {1}, 
+volume = {18}, 
+local-url = {file://localhost/Users/tommy/Documents/Papers%20Library/principled-hyperparameters.pdf}, 
+year = {2018}
 }
-
-@article{steyvers2007probabilistic,
-  title={Probabilistic topic models},
-  author={Steyvers, Mark and Griffiths, Tom},
-  journal={Handbook of latent semantic analysis},
-  volume={427},
-  number={7},
-  pages={424--440},
-  year={2007}
+@article{undefined, 
+title = {{BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding}}, 
+author = {Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina}, 
+journal = {arXiv}, 
+eprint = {1810.04805}, 
+abstract = {{We introduce a new language representation model called BERT, which stands for Bidirectional Encoder Representations from Transformers. Unlike recent language representation models, BERT is designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers. As a result, the pre-trained BERT model can be fine-tuned with just one additional output layer to create state-of-the-art models for a wide range of tasks, such as question answering and language inference, without substantial task-specific architecture modifications. BERT is conceptually simple and empirically powerful. It obtains new state-of-the-art results on eleven natural language processing tasks, including pushing the GLUE score to 80.5\% (7.7\% point absolute improvement), MultiNLI accuracy to 86.7\% (4.6\% absolute improvement), SQuAD v1.1 question answering Test F1 to 93.2 (1.5 point absolute improvement) and SQuAD v2.0 Test F1 to 83.1 (5.1 point absolute improvement).}}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/2020-11-22/1810.04805.pdf}, 
+year = {2018}
 }
-
-@inproceedings{wallach2009rethinking,
-  title={Rethinking LDA: Why priors matter},
-  author={Wallach, Hanna M and Mimno, David M and McCallum, Andrew},
-  booktitle={Advances in neural information processing systems},
-  pages={1973--1981},
-  year={2009}
+@article{undefined, 
+title = {{Assessing Language Models with Scaling Properties}}, 
+author = {Takahashi, Shuntaro and Tanaka-Ishii, Kumiko}, 
+journal = {arXiv}, 
+eprint = {1804.08881}, 
+abstract = {{Language models have primarily been evaluated with perplexity. While perplexity quantifies the most comprehensible prediction performance, it does not provide qualitative information on the success or failure of models. Another approach for evaluating language models is thus proposed, using the scaling properties of natural language. Five such tests are considered, with the first two accounting for the vocabulary population and the other three for the long memory of natural language. The following models were evaluated with these tests: n-grams, probabilistic context-free grammar (PCFG), Simon and Pitman-Yor (PY) processes, hierarchical PY, and neural language models. Only the neural language models exhibit the long memory properties of natural language, but to a limited degree. The effectiveness of every test of these models is also discussed.}}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/2020-11-15/1804.08881.pdf}, 
+year = {2018}
 }
-
-@misc{bruin2006faq,
-  title={FAQ. What are pseudo-R-squareds},
-  author={Bruin, J},
-  year={2006},
-  publisher={UCLA: Academic Technology Services, Statistical Consulting Group. Retrieved~…}
+@article{morrisarxiv, 
+title = {{Using simulation studies to evaluate statistical methods}}, 
+author = {Morris, Tim P and White, Ian R and Crowther, Michael J}, 
+journal = {arXiv}, 
+issn = {0277-6715}, 
+doi = {10.1002/sim.8086}, 
+pmid = {30652356}, 
+eprint = {1712.03198}, 
+abstract = {{Simulation studies are computer experiments that involve creating data by pseudorandom sampling. The key strength of simulation studies is the ability to understand the behaviour of statistical methods because some 'truth' (usually some parameter/s of interest) is known from the process of generating the data. This allows us to consider properties of methods, such as bias. While widely used, simulation studies are often poorly designed, analysed and reported. This tutorial outlines the rationale for using simulation studies and offers guidance for design, execution, analysis, reporting and presentation. In particular, this tutorial provides: a structured approach for planning and reporting simulation studies, which involves defining aims, data-generating mechanisms, estimands, methods and performance measures ('ADEMP'); coherent terminology for simulation studies; guidance on coding simulation studies; a critical discussion of key performance measures and their estimation; guidance on structuring tabular and graphical presentation of results; and new graphical presentations. With a view to describing recent practice, we review 100 articles taken from Volume 34 of Statistics in Medicine that included at least one simulation study and identify areas for improvement.}}, 
+pages = {2074--2102}, 
+number = {11}, 
+volume = {38}, 
+year = {2017}
 }
-
-@article{zipf1949human,
-  title={Human behavior and the principle of least effort.},
-  author={Zipf, George Kingsley},
-  year={1949},
-  publisher={Addison-Wesley Press}
+@inproceedings{schofield2017stopwords, 
+author = {Schofield, Alexandra and Magnusson, Måns and Mimno, David}, 
+title = {{Pulling Out the Stops: Rethinking Stopword Removal for Topic Models}}, 
+booktitle = {Proceedings of the 15th Conference of the European Chapter of the Association for Computational Linguistics: Volume 2, Short Papers}, 
+doi = {10.18653/v1/e17-2069}, 
+url = {https://www.aclweb.org/anthology/E17-2069}, 
+pages = {432--436}, 
+year = {2017}
 }
-
-@misc{nih,
-  title = {Welcome to ExPORTER},
-  howpublished = {\url{https://exporter.nih.gov/}},
-  note = {Accessed: 2015-01-08}
+@article{altman2017entropy, 
+title = {{Generalized entropies and the similarity of texts}}, 
+author = {Altmann, Eduardo G and Dias, Laércio and Gerlach, Martin}, 
+journal = {Journal of Statistical Mechanics: Theory and Experiment}, 
+doi = {10.1088/1742-5468/aa53f5}, 
+pages = {014002}, 
+number = {1}, 
+volume = {2017}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-08-07/Altmann_2017_J._Stat._Mech._2017_014002.pdf}, 
+year = {2017}
 }
-
-@IEEEtranBSTCTL{IEEEexample:BSTcontrol,
-CTLuse_article_number = "yes",
-CTLuse_paper = "yes",
-CTLuse_url = "yes",
-CTLuse_forced_etal = "no",
-CTLmax_names_forced_etal = "10",
-CTLnames_show_etal = "1",
-CTLuse_alt_spacing = "yes",
-CTLalt_stretch_factor = "4",
-CTLdash_repeated_names = "yes",
-CTLname_format_string = "{f.˜}{vv˜}{ll}{, jj}",
-CTLname_latex_cmd = "",
-CTLname_url_prefix = "[Online]. Available:"
+@article{undefined, 
+title = {{Attention Is All You Need}}, 
+author = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N and Kaiser, Lukasz and Polosukhin, Illia}, 
+journal = {arXiv}, 
+eprint = {1706.03762}, 
+abstract = {{The dominant sequence transduction models are based on complex recurrent or convolutional neural networks in an encoder-decoder configuration. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.}}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/2020-11-22/1706.03762.pdf}, 
+year = {2017}
+}
+@article{roberts2016textmodel, 
+title = {{A Model of Text for Experimentation in the Social Sciences}}, 
+author = {Roberts, Margaret E and Stewart, Brandon M and Airoldi, Edoardo M}, 
+journal = {Journal of the American Statistical Association}, 
+issn = {0162-1459}, 
+doi = {10.1080/01621459.2016.1141684}, 
+abstract = {{Statistical models of text have become increasingly popular in statistics and computer science as a method of exploring large document collections. Social scientists often want to move beyond exploration, to measurement and experimentation, and make inference about social and political processes that drive discourse and content. In this article, we develop a model of text data that supports this type of substantive research. Our approach is to posit a hierarchical mixed membership model for analyzing topical content of documents, in which mixing weights are parameterized by observed covariates. In this model, topical prevalence and topical content are specified as a simple generalized linear model on an arbitrary number of document-level covariates, such as news source and time of release, enabling researchers to introduce elements of the experimental design that informed document collection into the model, within a generally applicable framework. We demonstrate the proposed methodology by analyzing a collection of news reports about China, where we allow the prevalence of topics to evolve over time and vary across newswire services. Our methods quantify the effect of news wire source on both the frequency and nature of topic coverage. Supplementary materials for this article are available online.}}, 
+pages = {988--1003}, 
+number = {515}, 
+volume = {111}, 
+local-url = {file://localhost/Users/tommy/Documents/Papers%20Library/Roberts-A%20Model%20of%20Text%20for%20Experimentation%20in%20the%20Social%20Sciences-2016-Journal%20of%20the%20American%20Statistical%20Association.pdf}, 
+year = {2016}
+}
+@article{chen2015warplda, 
+title = {{WarpLDA: a Cache Efficient O(1) Algorithm for Latent Dirichlet Allocation}}, 
+author = {Chen, Jianfei and Li, Kaiwei and Zhu, Jun and Chen, Wenguang}, 
+journal = {arXiv}, 
+eprint = {1510.08628}, 
+abstract = {{Developing efficient and scalable algorithms for Latent Dirichlet Allocation (LDA) is of wide interest for many applications. Previous work has developed an O(1) Metropolis-Hastings sampling method for each token. However, the performance is far from being optimal due to random accesses to the parameter matrices and frequent cache misses. In this paper, we first carefully analyze the memory access efficiency of existing algorithms for LDA by the scope of random access, which is the size of the memory region in which random accesses fall, within a short period of time. We then develop WarpLDA, an LDA sampler which achieves both the best O(1) time complexity per token and the best O(K) scope of random access. Our empirical results in a wide range of testing conditions demonstrate that WarpLDA is consistently 5-15x faster than the state-of-the-art Metropolis-Hastings based LightLDA, and is comparable or faster than the sparsity aware F+LDA. With WarpLDA, users can learn up to one million topics from hundreds of millions of documents in a few hours, at an unprecedentedly throughput of 11G tokens per second.}}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/1510.08628.pdf}, 
+year = {2015}
+}
+@article{xiong2015coherence, 
+title = {{Topic-Based Coherence Modeling for Statistical Machine Translation}}, 
+author = {Xiong, Deyi and Zhang, Min and Wang, Xing}, 
+journal = {IEEE/ACM Transactions on Audio, Speech, and Language Processing}, 
+issn = {2329-9290}, 
+doi = {10.1109/taslp.2015.2395254}, 
+abstract = {{Coherence that ties sentences of a text into a meaningfully connected structure is of great importance to text generation and translation. In this paper, we propose topic-based coherence models to produce coherence for document translation, in terms of the continuity of sentence topics in a text. We automatically extract a coherence chain for each source text to be translated. Based on the extracted source coherence chain, we adopt a maximum entropy classifier to predict the target coherence chain that defines a linear topic structure for the target document. We build two topic-based coherence models on the predicted target coherence chain: 1) a word level coherence model that helps the decoder select coherent word translations and 2) a phrase level coherence model that guides the decoder to select coherent phrase translations. We integrate the two models into a state-of-the-art phrase-based machine translation system. Experiments on large-scale training data show that our coherence models achieve substantial improvements over both the baseline and models that are built on either document topics or sentence topics obtained under the assumption of direct topic correspondence between the source and target side. Additionally, further evaluations on translation outputs suggest that target translations generated by our coherence models are more coherent and similar to reference translations than those generated by the baseline.}}, 
+pages = {483--493}, 
+number = {3}, 
+volume = {23}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/6187-31357-1-PB.pdf}, 
+year = {2015}
+}
+@article{altmann2015laws, 
+title = {{Statistical laws in linguistics}}, 
+author = {Altmann, Eduardo G and Gerlach, Martin}, 
+journal = {arXiv}, 
+doi = {10.1007/978-3-319-24403-7\_2}, 
+eprint = {1502.03296}, 
+abstract = {{Zipf's law is just one out of many universal laws proposed to describe statistical regularities in language. Here we review and critically discuss how these laws can be statistically interpreted, fitted, and tested (falsified). The modern availability of large databases of written text allows for tests with an unprecedent statistical accuracy and also a characterization of the fluctuations around the typical behavior. We find that fluctuations are usually much larger than expected based on simplifying statistical assumptions (e.g., independence and lack of correlations between observations).These simplifications appear also in usual statistical tests so that the large fluctuations can be erroneously interpreted as a falsification of the law. Instead, here we argue that linguistic laws are only meaningful (falsifiable) if accompanied by a model for which the fluctuations can be computed (e.g., a generative model of the text). The large fluctuations we report show that the constraints imposed by linguistic laws on the creativity process of text generation are not as tight as one could expect.}}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-08-09/1502.03296.pdf}, 
+year = {2015}
+}
+@misc{pazhayidam2015hyper, 
+author = {GEORGE, CLINT PAZHAYIDAM}, 
+title = {{LATENT DIRICHLET ALLOCATION: HYPERPARAMETER SELECTION AND APPLICATIONS TO ELECTRONIC DISCOVERY}}, 
+shorttitle = {PhD Thesis}, 
+publisher = {University of Florida}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/1e52bd981e20344c7295f88ed1802d2f56c1.pdf}, 
+year = {2015}
+}
+@inproceedings{nguyen2015supervisedtm, 
+author = {Nguyen, Thang and Boyd-Graber, Jordan and Lund, Jeffrey and Seppi, Kevin and Ringger, Eric}, 
+title = {{Is Your Anchor Going Up or Down? Fast and Accurate Supervised Topic Models}}, 
+booktitle = {Human Language Technologies: The 2015 Annual Conference of the North American Chapter of the ACL}, 
+doi = {10.3115/v1/n15-1076}, 
+pages = {746--755}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/N15-1076.pdf}, 
+year = {2015}
+}
+@inproceedings{schnabel2015eval, 
+author = {Schnabel, Tobias and Labutov, Igor and Mimno, David and Joachims, Thorsten}, 
+title = {{Evaluation methods for unsupervised word embeddings}}, 
+booktitle = {Proceedings of the 2015 Conference on Empirical Methods in Natural Language Processing}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/D15-1036.pdf}, 
+year = {2015}
+}
+@inproceedings{tang2014limits, 
+author = {Tang, Jian and Meng, Zhaoshi and Nguyen, XuanLong and Mei, Qiaozhu and Zhang, Ming}, 
+title = {{Understanding the Limiting Factors of Topic Modeling via Posterior Contraction Analysis}}, 
+booktitle = {Proceedings of the 31 st International Conference on Machine Learning}, 
+url = {http://proceedings.mlr.press/v32/tang14.pdf}, 
+abstract = {{Topic models such as the latent Dirichlet allocation (LDA) have become a standard staple in
+the modeling toolbox of machine learning. They
+have been applied to a vast variety of data sets,
+contexts, and tasks to varying degrees of success.
+However, to date there is almost no formal theory
+explicating the LDA’s behavior, and despite its
+familiarity there is very little systematic analysis
+of and guidance on the properties of the data that
+affect the inferential performance of the model.
+This paper seeks to address this gap, by providing
+a systematic analysis of factors which characterize the LDA’s performance. We present theorems
+elucidating the posterior contraction rates of the
+topics as the amount of data increases, and a thorough supporting empirical study using synthetic
+and real data sets, including news and web-based
+articles and tweet messages. Based on these results we provide practical guidance on how to
+identify suitable data sets for topic models, and
+how to specify particular model parameters.}}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-07-27/tang14.pdf}, 
+year = {2014}
+}
+@article{10.1088/1367-2630/16/11/113010, 
+title = {{Scaling laws and fluctuations in the statistics of word frequencies}}, 
+author = {Gerlach, Martin and Altmann, Eduardo G}, 
+journal = {New Journal of Physics}, 
+issn = {1367-2630}, 
+doi = {10.1088/1367-2630/16/11/113010}, 
+eprint = {1406.4441}, 
+abstract = {{In this paper, we combine statistical analysis of written texts and simple stochastic models to explain the appearance of scaling laws in the statistics of word frequencies. The average vocabulary of an ensemble of fixed-length texts is known to scale sublinearly with the total number of words (Heaps' law). Analyzing the fluctuations around this average in three large databases (Google-ngram, English Wikipedia, and a collection of scientific articles), we find that the standard deviation scales linearly with the average (Taylorʼs law), in contrast to the prediction of decaying fluctuations obtained using simple sampling arguments. We explain both scaling laws (Heaps' and Taylor) by modeling the usage of words using a Poisson process with a fat-tailed distribution of word frequencies (Zipfʼs law) and topic-dependent frequencies of individual words (as in topic models). Considering topical variations lead to quenched averages, turn the vocabulary size a non-self-averaging quantity, and explain the empirical observations. For the numerous practical applications relying on estimations of vocabulary size, our results show that uncertainties remain large even for long texts. We show how to account for these uncertainties in measurements of lexical richness of texts with different lengths.}}, 
+pages = {113010}, 
+number = {11}, 
+volume = {16}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/2020-11-15/Gerlach_2014_New_J._Phys._16_113010.pdf}, 
+year = {2014}
+}
+@article{vulic2014crosslang, 
+title = {{Probabilistic Models of Cross-Lingual Semantic Similarity in Context Based on Latent Cross-Lingual Concepts Induced from Comparable Data}}, 
+author = {Vulić, Ivan and Moens, Marie-Francine}, 
+doi = {10.3115/v1/d14-1040}, 
+pages = {349--362}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/VulicMoensEMNLP2014.pdf}, 
+year = {2014}
+}
+@inproceedings{smith2014viz, 
+author = {Smith, Alison and Chuang, Jason and Hu, Yuening and Boyd-Graber, Jordan and Findlater, Leah}, 
+title = {{Concurrent Visualization of Relationships between Words and Topics in Topic Models}}, 
+booktitle = {Proceedings of the Workshop on Interactive Language Learning, Visualization, and Interfaces}, 
+doi = {10.3115/v1/w14-3112}, 
+pages = {79--82}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/W14-3112.pdf}, 
+year = {2014}
+}
+@article{wang2014translation, 
+title = {{A Topic-Based Reordering Model for Statistical Machine Translation}}, 
+author = {Wang, Xing and Xiong, Deyi and Zhang, Min and Hong, Yu and Yao, Jianmin}, 
+issn = {1865-0929}, 
+doi = {10.1007/978-3-662-45924-9\_37}, 
+abstract = {{Reordering models are one of essential components of statistical machine translation. In this paper, we propose a topic-based reordering model to predict orders for neighboring blocks by capturing topic-sensitive reordering patterns. We automatically learn reordering examples from bilingual training data, which are associated with document-level and word-level topic information induced by LDA topic model. These learned reordering examples are used as evidences to train a topic-based reordering model that is built on a maximum entropy (MaxEnt) classifier. We conduct large-scale experiments to validate the effectiveness of the proposed topic-based reordering model on the NIST Chinese-to-English translation task. Experimental results show that our topic-based reordering model achieves significant performance improvement over the conventional reordering model using only lexical information.}}, 
+pages = {414--421}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/167.pdf}, 
+year = {2014}
+}
+@inproceedings{roberts2013stm, 
+author = {Roberts, Margaret E. and Stewart, Brandon M. and Tingley, Dustin and Airoldi, Edoardo M.}, 
+title = {{The Structural Topic Model and Applied Social Science}}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-23/stmnips2013.pdf}, 
+year = {2013}
+}
+@article{crowther2013simulation, 
+title = {{Simulating biologically plausible complex survival data}}, 
+author = {Crowther, Michael J. and Lambert, Paul C.}, 
+doi = {10.1002/sim.0000}, 
+journaltitle = {Statistics in Medicine}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-08-04/Crowther2013%20(2).pdf}, 
+year = {2013}
+}
+@inproceedings{nguyen2013regression, 
+author = {Nguyen, Viet-An and Boyd-Graber, Jordan and Resnik, Philip}, 
+title = {{Lexical and Hierarchical Topic Regression}}, 
+booktitle = {Advances in Neural Information Processing Systems}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/5163-lexical-and-hierarchical-topic-regression.pdf}, 
+year = {2013}
+}
+@article{mimno2012sparse, 
+title = {{Sparse Stochastic Inference for Latent Dirichlet allocation}}, 
+author = {Mimno, David and Hoffman, Matt and Blei, David}, 
+journal = {arXiv}, 
+eprint = {1206.6425}, 
+abstract = {{We present a hybrid algorithm for Bayesian topic models that combines the efficiency of sparse Gibbs sampling with the scalability of online stochastic inference. We used our algorithm to analyze a corpus of 1.2 million books (33 billion words) with thousands of topics. Our approach reduces the bias of variational inference and generalizes to many Bayesian hidden-variable models.}}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/1206.6425.pdf}, 
+year = {2012}
+}
+@inproceedings{socher2012rnn, 
+author = {Socher, Richard and Huval, Brody and Manning, Christopher D. and Ng, Andrew Y.}, 
+title = {{Semantic Compositionality through Recursive Matrix-Vector Spaces}}, 
+booktitle = {Proceedings of the 2012 Joint Conference on Empirical Methods in Natural Language Processing and Computational Natural Language Learning}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/D12-1110.pdf}, 
+year = {2012}
+}
+@inproceedings{jagarlamudi2012transfer, 
+author = {Jagarlamudi, Jagadeesh and Udupa, Raghavendra and III, Hal Daume}, 
+title = {{Incorporating Lexical Priors into Topic Models}}, 
+booktitle = {Proceedings of the 13th Conference of the European Chapter of the Association for Computational Linguistics}, 
+year = {2012}
+}
+@inproceedings{vulic2012bilinguallda, 
+author = {Vulic, Ivan and Moens, Marie-Francine}, 
+title = {{Detecting Highly Confident Word Translations from Comparable Corpora without Any Prior Knowledge}}, 
+booktitle = {Proceedings of the 13th Conference of the European Chapter of the Association for Computational Linguistics}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/VulicMoensEACL2012final.pdf}, 
+year = {2012}
+}
+@article{wang2012dynamic, 
+title = {{Continuous Time Dynamic Topic Models}}, 
+author = {Wang, Chong and Blei, David and Heckerman, David}, 
+journal = {arXiv}, 
+eprint = {1206.3298}, 
+abstract = {{In this paper, we develop the continuous time dynamic topic model (cDTM). The cDTM is a dynamic topic model that uses Brownian motion to model the latent topics through a sequential collection of documents, where a "topic" is a pattern of word use that we expect to evolve over the course of the collection. We derive an efficient variational approximate inference algorithm that takes advantage of the sparsity of observations in text, a property that lets us easily handle many time points. In contrast to the cDTM, the original discrete-time dynamic topic model (dDTM) requires that time be discretized. Moreover, the complexity of variational inference for the dDTM grows quickly as time granularity increases, a drawback which limits fine-grained discretization. We demonstrate the cDTM on two news corpora, reporting both predictive perplexity and the novel task of time stamp prediction.}}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/1206.3298.pdf}, 
+year = {2012}
+}
+@article{goldwater2011zipf, 
+title = {{Producing Power-Law Distributions and Damping Word Frequencies with Two-Stage Language Models}}, 
+author = {Goldwater, Sharon and Griffiths, Thomas L. and Johnson, Mark}, 
+journal = {Journal of Machine Learning Research}, 
+journaltitle = {Journal of Machine Learning Research}, 
+volume = {12}, 
+year = {2011}
+}
+@inproceedings{mimno2011coherence, 
+author = {Mimno, David and Wallach, Hanna M. and Talley, Edmund and Leenders, Miriam and McCallum, Andrew}, 
+title = {{Optimizing Semantic Coherence in Topic Models}}, 
+booktitle = {Proceedings of the 2011 Conference on Empirical Methods in Natural Language Processing}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/D11-1024.pdf}, 
+year = {2011}
+}
+@inproceedings{musat2011concept, 
+author = {Musat, Claudiu Cristian and Velcin, Julien and Trausan-Matu, Stefan and Rizoiu, Marian-Andrei}, 
+title = {{Improving Topic Evaluation Using Conceptual Knowledge}}, 
+booktitle = {Proceedings  of  the  Twenty-Second  International  Joint  Conference  on  Artificial  Intelligence}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/3010-16166-1-PB.pdf}, 
+year = {2011}
+}
+@inproceedings{vulic2011translation, 
+author = {Vulic, Ivan and Smet, Wim De and Moens, Marie-Francine}, 
+title = {{Identifying Word Translations from Comparable Corpora Using Latent Topic Models}}, 
+booktitle = {Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics: Human Language Technologies}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/VulicDeSmetMoensACL2011.pdf}, 
+year = {2011}
+}
+@article{vulic2011cross, 
+title = {{Cross-Language Information Retrieval with Latent Topic Models Trained on a Comparable Corpus}}, 
+author = {Vulić, Ivan and Smet, Wim De and Moens, Marie-Francine}, 
+issn = {0302-9743}, 
+doi = {10.1007/978-3-642-25631-8\_4}, 
+abstract = {{In this paper we study cross-language information retrieval using a bilingual topic model trained on comparable corpora such as Wikipedia articles. The bilingual Latent Dirichlet Allocation model (BiLDA) creates an interlingual representation, which can be used as a translation resource in many different multilingual settings as comparable corpora are available for many language pairs. The probabilistic interlingual representation is incorporated in a statistical language model for information retrieval. Experiments performed on the English and Dutch test datasets of the CLEF 2001-2003 CLIR campaigns show the competitive performance of our approach compared to cross-language retrieval methods that rely on pre-existing translation dictionaries that are hand-built or constructed based on parallel corpora.}}, 
+pages = {37--48}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/VulicDeSmetMoensAIRS2011.pdf}, 
+year = {2011}
+}
+@inproceedings{mimno2011checking, 
+author = {Mimno, David and Blei, David}, 
+title = {{Bayesian Checking for Topic Models}}, 
+booktitle = {Proceedings of the 2011 Conference on Empirical Methods in Natural Language Processing}, 
+local-url = {file://localhost/Users/tommy/Google%20Drive/gmu/_dissertation/references/download%202020-06-22/D11-1021.pdf}, 
+year = {2011}
 }
