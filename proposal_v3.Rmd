@@ -42,7 +42,7 @@ I propose reexamining a model that has become less popular in machine learning c
 
 To complete the requirements of my dissertation, I propose making three contributions. The first is a theoretical study of the LDA data generating process (LDA-DGP). The second is a study exploring transfer learning for LDA. The third is a software package for the R language that draws on my research and a framework known as the "tidyverse" (cite) to make a principled, flexible, performant, and user-friendly interface for training and using LDA models.
 
-The remainder of this proposal is organized as follows: Section 2 reviews the foundations of LDA. Section 3 outlines my proposed study of the LDA-DGP. Section 4 outlines my proposed study of transfer learning for LDA. Section 5 outlines a new (old) performance metric for topic modeling, the coefficient of determination for multidimensional outcomes. Section 6 introduces _tidylda_ an in-develpment R package for LDA. Finally section 7 offers a timeline for completing the proposed dissertation.
+The remainder of this proposal is organized as follows: Section 2 reviews the foundations of LDA. Section 3 outlines my proposed study of the LDA-DGP. Section 4 outlines a new (old) performance metric for topic modeling, the coefficient of determination. Section 5 outlines a proposed study of transfer learning for LDA. Section 6 introduces _tidylda_ an in-develpment R package for LDA. Finally section 7 offers a timeline for completing the proposed dissertation.
 
 # Background: Latent Dirichlet Allocation
 
@@ -52,8 +52,8 @@ Probabilistic topic models are widely used latent variable models of language. P
 
 Latent Dirichlet Allocation (LDA) is a Bayesian model of language. It models an idealized stochastic process for how words get on the page. Instead of writing full, syntatictically-coherent, sentences, the author samples a topic from a multinomial distribution and then given the topic samples a word. I call this process the LDA data generating process (LDA-DGP). Succintly it is
 
-* Sample $K$ topics from a $V$-dimensional Dirichelt s.t. $\boldsymbol\beta_k \sim Dirichlet_V(\boldsymbol\eta)$
-* Sample $D$ documents from a $K$-dimensional Dirichlet s.t. $\boldsymbol\beta_k \sim Dirichlet_V(\boldsymbol\eta)$
+* Sample $K$ topics from a $V$-dimensional Dirichelt s.t. $\boldsymbol\beta_k \sim Dirichlet(\boldsymbol\eta)$
+* Sample $D$ documents from a $K$-dimensional Dirichlet s.t. $\boldsymbol\theta_d \sim Dirichlet(\boldsymbol\alpha)$
 * For each document, $d$, and each word instance, $n \in \{1, 2, ..., n_d\}$ perform the following two-step sampling
     1. Sample a topic $z_{d,n} \sim Multinomial(1,\boldsymbol\theta_d)$
     2. Given topic $z_{d,n}$, sample a word $w_{d,n} \sim Multinomial(1, \boldsymbol\beta_{z_{d,n}})$
@@ -102,8 +102,6 @@ Many algorithms for fitting LDA models exist. The most popular are variational B
 # Study 1: Examining the LDA-DGP
 
 LDA models a process that generates language data. The LDA-DGP is clearly not how people write. Yet the degree to which the LDA-DGP can—or cannot—generate data that share the same statistical properties of human language has received little study. If the LDA-DGP can generate data that reasonably approximates human language data, then studying a collection of synthetic corpora drawn from the LDA-DGP can inform systematic strategies and rules for selecting hyperparameters and diagnosting model misspecification.
-
-[Describe LDA-DGP]
 
 Paragraph on history of research:
 2011 goldwater et al
@@ -215,13 +213,13 @@ For the sake of brevity, I will state the key to R-squared for topic models here
 1. $E(\boldsymbol{X}|\boldsymbol\Theta,\boldsymbol{B}) = \boldsymbol{n} \odot \boldsymbol\Theta \cdot \boldsymbol{B}$ In other words, we can compare the observed word frequencies in the data ($\boldsymbol{X}$) to the expected word frequencies under the model ($E(\boldsymbol{X}|\boldsymbol\Theta,\boldsymbol{B})$).
 2. The various sums of squares used to calculate the coefficient of determination may be interpreted as a sum of squared Euclidean distances in 1 space. If generalized to n-space, we can then compare the actual and expected word frequencies in a calculation that follows the definition of the coefficient of determination.
 
-This interpretation of R-squared has most of the same properties as the commonly used R-squared. It is interpretable as the proportion of variation in the data explained by the model. An R-squared of 1 means that your model perfectly predicts the data. An R-squared of zero means that your model is no better than just guessing the mean of the data, i.e. a vector of word frequencies averaged across all documents. Yet a key difference is that we lose the lower bound of zero. While negative values of this new R-squared are computationally possible, this is not problematic. It just means that ones model is worse than just guessing the mean of the data, quite the feat if one were to acheive it.
+This interpretation of R-squared has most of the same properties as the commonly used R-squared. It is interpretable as the proportion of variation in the data explained by the model. An R-squared of 1 means that your model perfectly predicts the data. An R-squared of zero means that your model is no better than just guessing the mean of the data, i.e. a vector of word frequencies averaged across all documents. Yet we lose the lower bound of zero. Negative values of this new R-squared are computationally possible but this isn't a problem. It just means that one's model is worse than just guessing the mean of the data, quite the feat if one were to acheive it.
 
 I propose performing the following for this section of my dissertation:
 
 1. Update the paper on arXiv to reflect the current state of research in topic model evaluation
 2. Expand on the simulation study used for the paper based on the simulation method I will propose in the LDA-DGP study
-3. Expand on the real world corpora study to include more corpora. I would like to use more commonly used "benchmark" corpora so that readers familiar with the literature will have a more intuitive understanding of how the metric works.
+3. Expand on the real world corpora study to include more corpora. I would like to use more commonly used corpora so that readers familiar with the literature will have a more intuitive understanding of how the metric works.
 
 # Study 3: Transfer Learning for LDA
 ## Thesis
@@ -239,6 +237,8 @@ The remainder of this section is organized as follows. Section 4.2 summarizes pr
 ## Background
 
 ### Related Work
+
+seeded LDA etc., dynamic topic models, online algorithms for LDA, pre-train/fine tune in NNs (to set up analogy)
 
 ### MCMC Mechanics for LDA
 When fine-tuning a neural network, one introduces new data to a network whose weights start at values learned from training on a larger dataset. The weights update using backpropagation and whichever optimization algorithm (e.g. ADAM) is appropriate. The optimization algorithm may contain a learning rate, which tunes how quickly the neural network incorporates information from the new training data set. 
