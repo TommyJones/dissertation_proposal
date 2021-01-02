@@ -1,0 +1,611 @@
+---
+title: "Corpus Statistics and Fine Tuning Latent Dirichlet Allocation for Transfer Learning: Dissertation Proposal"
+
+author:
+  - Tommy Jones^[PhD Student, George Mason University Dept. of Computational and Data Sciences, tjones42@gmu.edu]
+  
+abstract: |
+  Language is one of the most information rich and abundant data sources available. Rigorous statistical study of linguistic phenomena can elevate the digital humanities, linguistic applications to computational social science, and statistics itself. As yet, statistical applications to language, whether in linguistics, computation, or otherwise, are largely ad-hoc. Performance gains in modeling have largely been due to two factors: fine tuning transfer learning and increasing the size and complexity of models. Due to the statistical nature of human language---governed by several power law phenomena---fine tuning transfer learning may be advantageous for corpus analyses, not just artificial intelligence applications. Yet state of the art "transformer" models are expensive and opaque. I propose we turn our attention back to Latent Dirichlet Allocation (LDA). As a parameteric statistical model of a data generating process, it has the potential to be used in statistically rigorous ways to study language. And I have implemented an algorithm for fine tuning transfer learning using LDA. In this dissertation proposal, I state my case for "corpus statistics", a more statistically rigorous take on analyzing text data, review the literature around LDA, propose 3 studies, and 1 piece of softwre to fulfill the requirements of my dissertation.
+  
+bibliography: [topicmodels.bib,simulation.bib,zipf.bib,manual_entry.bib,transformers.bib,software.bib]
+csl: ieee.csl
+link-citations: yes
+# csl: acm-sig-proceedings.csl
+# output: rticles::acm_article
+
+header-includes:
+    - \usepackage{setspace}\doublespacing
+output:
+  pdf_document:
+    number_sections: true
+    toc: true
+    toc_depth: 2
+  html_document:
+    toc: true
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+```
+
+# Introduction and Motivation
+Human language is one of the most information rich sources of data that exists. Language is literally the medium humans use to communicate information to each other. And in an increasingly digitally connected world, the amount of text available for analyis has exploded. Improvements in computing power and algorithmic advances have driven staggering progress in machine learning tasks for natural language, including machine translation, question answering, automatic summarization, information extraction and more. 
+
+Such advances have lead to the development of the "_digital humanities_" a quantification of traditionally qualitative fields such as history, literature, communications, and the arts. Examples using text data include statistical modeling of language in the _Pennsylvania Gazette_ from 1728 to 1800 [@newman2006probabilistic], tracking the evolving use of the Greek word _kosmos_ from 700 BC onwards [@perrone2019gasc], detecting changes in academic journals dedicated to study of the Classics [@mimno2012computational], and more. According to a recent issue of _the Economist_ [@economistdec2020]
+
+> Google Scholar now contains about 75,000 academic articles and essays that mention "digital humanities". That total is already bigger than for "Napolean Bonaparte" (57,000) or "Romeo and Juliet" (66,000). Nearly half of the 75,000 articles were published since 2016.
+
+Traditionally quantitative fields, especially in the social sciences, have also begun incorporating textual data into their analyses. This emphasis in computationally-intensive methods for social science are collectively known as "_computational social science_". Applications to economics and social science were presented in recent Association for Computational Linguistics workshops [@emnlp-2019-economics] [@ws-2019-natural-language]. In an example I find particularly exciting, an economist at the Federal Reserve Board demonstrated that language in the Fed's public meeting minutes could be used to predict the Fed's non-public economic forecasts. [@ericsson2017predicting] 
+
+## Corpus Statistics
+The tools used in the digital humanities derive from linguistics, computing, and statistics. Linguistics has the subfield of _corpus linguistics_, the study of language as it appears in samples of "real world" text (corpora). Computing has the subfield of _natural language processing_ (NLP) which concerns itself with the interactions of people and computers. A particularly relevant subfield of NLP is _distributional semantics_, which quantifies semantic similarities in language in terms of relative frequencies of linguistic items (such as words). Yet in statistics no named subfield exists. 
+
+Statistics as a field is waking up to its role regarding linguistic data, however. The American Statistical Association (ASA) recently formed an interest group[^interestgroup] for text analysis in 2019 [@taig2019]. A year later, the Joint Statistics Meetings---the annual conference of the ASA and 11 other statistical associations---had over 20 sessions featuring text analysis research [@jsm2020]. This isn't to say the interest group caused the volume of text analysis research. Rather, it indicates that such research is happening anyway. Only recently has there been effort to organize a community under a statistics umbrella.
+
+[^interestgroup]: I have been involved since the beginning and am the group's web master.
+
+Rigorous statistical study of linguistic phenomena can elevate the digital humanities, linguistic applications to computational social science, and statistics itself. As yet, statistical applications to language, whether in linguistics, computation, or otherwise, are largely ad-hoc. Save a handful of empirical laws, there is little statistical theory guiding the modeling of textual data. What theory does exist generally does not inform specification or use of statistical or machine learning models of text. Instead, the field has relied on icreasingly complex models, requiring tremendous computational power, to drive these advances.
+
+To envision the art of the possible, consider the state of statistical theory in linear regression. Linear regression---and its related statistical theory---dates back to the early 1800's from the works of Legendre [@legendre1805nouvelles], Gauss [@angrist2008mostly], and Galton [@stanton2001galton]. We have formal statements of the assumptions required for valid statistical inference using linear regression. We have multitudes of diagnostic statistics to assess the degree these assumptions are violated in the data or with model specifications. There are a plethora of remidiations to apply when key assumptions are violated so that valid statistical inference may still be made. And there are an abundance of statistical inferential methods built on top regression models used to detect structural breaks [@chow1960tests], calculate individual variable's contribution to the coefficient of determination [@anderson1994model], and on and on. We have been studying linear regression for a long time. As a result, we have an extremely powerful kit of statistical tools that are so easy to use that in 2020, we mostly take them for granted. Imagine what we could do if we brought this level of rigor to models and applications using language data in all of its abundance.
+
+Again, statistics does not have a named subfield dedicated to such study. Since naming a concept can give it power, I humbly submit "_corpus statistics_", so named because of similarity with corpus linguistics as the study of "samples" of real-world language in linguistics. Corpus linguistics uses statistics and other tools but its primary concern is linguistics itself. Corpus statistics may focus on "traditional" statistical concerns such as constructing appropriate random samples, quantifying uncertainty about claims learned from data, developing rigorous evaluation metrics for models, and so on where language is the topic of study. Corpus statistics can build off of work already begun in linguistics, machine learning, and complexity theory which concerns itself with the study of complex phenomena and power laws.
+
+Language is saturated with the statistics of power laws. Two empirical laws of language, Zipf's law and Heap's law---covered in more detail later in this proposal---are two manifestations of power laws in language data. Power laws are extreme distributions, with significant mass in their tails. Power laws have extremely large variance. In fact, for many parametarizations, the second moment does not exist, making the variance effectively infinite [@taleb2020]. Because of power laws in language, any finite sample (i.e., corpus) will miss key information. 
+
+Power laws in language might imply, then, that one needs external information for a throrough analysis of any one corpus. In fact, this is actuall how humans learn from language! Consider the following thought experiment where one wants to learn about chemistry from an English-language textbook. Presumably, this person has good grasp on the English language already, having a vocabulary and covering subject matter greater than the book itself contains. This person then reads the textbook, learns about chemistry, and in the process updates and expands their knowledge of the English language.[^soundsbayesian] So, in addition to traditional statistical concerns like representative samples and reasonable model specification, perhaps corpus statistics needs large base models of language to be updated for analyzing finite corpora.
+
+[^soundsbayesian]: This sounds philosophically Bayesian to me. Yet I see no reason why one needs to limit their study to the use of Bayesian statistical models.
+
+## Fine Tuning Transfer Learning
+In fact such models are in wide use in machine learning. This is called the _fine tuning paradigm of transfer learning_. Transfer learning is when a model is developed for one task---on one data set---and then re-used for another task and data set. In the fine tuning paradigm, the base model is modified for the new task, allowed to update based on the new data, or both. 
+
+Neural networks lend themselves naturally to fine tuning transfer learning. They are trained (or fit) using the iterative back propagation algorithm. Instead of initializing the model parameters---often called "weights"---at random, they are initialized at the same values they had in the base model. Then back propagation is resumed using the new data and all or some of the weights are allowed to update. This lets the analyst leverage information from a very large data set encoded in base model and adjust the parameters to fold in information in their new data set. Fine tuning transfer learning has been used for many years in deep learning models for computer vision, but it has recently gained widespread adoption in deep learning models for language.
+
+Current state of the art natural language processing models belong to a class of deep neural networks called "transformers".[^technicallydistinct] Famous examples of tranformers include BERT [@bert2018], XLM-R [@xlm-r], GPT-2 [@gpt2], GPT-3 [@gpt3], and more. In terms of raw accuracy for benchmark task-specific objectives, transformers reign supreme in Natural Language Processing [@wolf2020transformer]. 
+
+[^technicallydistinct]: Transformers get their name from the "transformer" sub-architecture for deep neural networks [@attention2017]. Technically, this is distinct from fine tuning transfer learning. But as of this writing, the two approaches are used hand-in-hand for natural language processing models.
+
+Transformers are extremely accurate on pre-defined natural language processing tasks, but they are not without problems. First, and most famously, these models are huge and expensive. Open AI's GPT-3 has 175 billion parameters. If each parameter is stored as a 4 byte float, then GPT-3 is 700 Gb on disk, larger than most data sets. GPT-3 is an extreme example, but its smaller cousins are not small. BERT has 110 million parameters and XLM-R has 550 million, for example. Training one of these base models can cost from hundreds to tens-of-thousands of dollars in compute costs [@hao2020mit]. This excludes trial and error runs necessary in any model development process. GPT-3 is rumored to have cost $4.6 million in compute [@chuan2020lambda].
+
+Second, the data sets used to build these base models affect results, but we don't know what the "right" data set looks like. That models inherit biases from the data on which they are developed is not controversial. Yet some of the issues in these large language models are particularly jarring. They can encode---then reproduce---racist or otherwise extreme language. And they may exclude language we wish was included, perhaps those of underrepresented groups. Yet the data sets used to construct transformers are so large, researchers cannot truly audit what they do or do not include. And as Timnit Gebru et al. point out, the investment required to construct large language models comes at an opportunity cost of learning how to strategically construct datasets without these downsides [@hao2020mit].[^samplingtheory]
+
+[^samplingtheory]: To me, this sounds like a task that the statistics community is well suited for, adapting sampling theory and statistical design for use in constructing data sets of language.
+
+Third, transformers are built for supervised tasks for artificial intelligence, not corpus analysis. Mostly these are sequence to sequence models used for question answering, machine translation, text generation, document summarization, and so on. While some of these tasks may be useful for corpus analysis, they really are distinct from a statistical analysis of a corpus. 
+
+Fourth, and most obviously, transformers are deep neural networks. Deep neural networks are spectacular in their flexibility and accuracy for many supervised learning tasks. Yet this flexibility and accuracy has come at the cost of complexity. Complexity, in turn, is often antethetical to understanding. 
+
+In sum, it seems that the fine-tuning approach of modeling would be beneficial to develop for corpus statistics. It reflects how we intuitively understand that humans use language to learn themselves. Yet we would need simpler, more transparent models upon which to apply and build on statistical theory. Transformers are too big, complex, and opaque for this task. Boyd-Graber and Mimno make this point explicitly on p. 116 of _Applications of Topic Models_, "Deep learning has a reputation for inscrutable parameters but state-of-the-art performance. One of the strengths of probabilistic models is their interpretability and grounded generative processes" [@boydgraber2017applications].
+
+## Summary of Proposed Research
+I propose reexamining a model that has become less popular in machine learning circles, Latent Dirichlet Allocation (LDA) [@blei2002lda]. Why? With the above comments in mind, LDA has some desireable properties. It models a data generating process which may be linked to the empirical laws of language. This property makes LDA, and related models, candidates for helping to develop a more robust statistical theory for modeling language. And while LDA may be less popular at the cutting edge of machine learning, it and its variants are still popular in fields such as computational social science  [@roberts2016textmodel] and the digital humanities  [@erlin2018topic]. 
+
+To complete the requirements of my dissertation, I propose making four contributions---three studies and one software library. The first study introduces a method for fine tuning transfer learning applicable to MCMC algorithms for LDA. The second investigates the data generating process modeled by LDA, linking it to emperical language laws and using it for simulation studies concerned with model specification. The third study introduces a new (yet old) evaluation metric for topic models, a generalized coefficient of determination. Finally, this sort of research is not practical if people cannot use it. I am developing a software package for the R language [@rlang] that draws on my research and a framework known as the "tidyverse" [@tidyverse] to make a principled, flexible, performant, and user-friendly interface for training and using LDA models.
+
+The remainder of this proposal is organized as follows: Section 2 reviews the foundations of LDA and related models. Section 3 outlines my proposed study of transfer learning for LDA. Section 4 outlines my proposed study of the LDA data generation process (LDA-DGP). Section 5 outlines my proposed study developing a coefficient of determination for topic models. Section 6 introduces _tidylda_ an in-develpment R package for LDA. Finally section 7 offers a timeline for completing the proposed dissertation.
+
+# Latent Dirichlet Allocation and Related Models
+In this section I summarize LDA, select models that came before, and select models that came after. Then I make a case for why LDA continues to be a worthy model of study in machine learning and why it is an advantageous place to start for corpus statistics.
+
+## Vector Space Model
+Most modern approaches to language modeling can trace their origin to the vector space model [@salton1975vector]. The vector space model represents contexts (usually documents) in multidimensional space whose coordinates are given by the frequencies of words within that context. These frequencies may be explicit counts, or they may be re-weighted. The vector space model makes the _bag of words_ assumption. Within a context, word order and proximity have no meaning. When one says a document is a "bag of words", they mean that word order is discarded and the document is only the relative frequencies of words within it. 
+
+More formally, let $\boldsymbol{X}$ be a $D \times V$ matrix of contexts. Each row represents a context, and each column a word.[^wordtoken] The key to the vector space model is that if $\boldsymbol{x}_i$ and $\boldsymbol{x}_j$ are close in the vector space given by $\boldsymbol{X}$, then the contexts represented by $\boldsymbol{x}_i$ and $\boldsymbol{x}_j$ must be semantically similar.
+
+[^wordtoken]: While there are distinct differences in the definitions of "word" and "token", for the purposes of this work I will use the two terms interchangibly for simplicity.
+
+The key limitation of the vector space model is that $\boldsymbol{X}$ is large and sparse. This leads to the "curse of dimensionality" where meaningful comparisons can be different because most dimensions have little signal [@lee1997document]. The bag of words assumption also disregards the use of synonyms or the fact that the same words can have multiple meanings---known as "polysemy".
+
+## Latent Semantic Indexing
+Latent Semantic Indexing (LSI) reduces the dimensions of $\boldsymbol{X}$ through a single value decomposition (SVD) [@deerwester1990lsa]. Since $\boldsymbol{X}$ is large and sparse, one can approximate it by $\boldsymbol{X}_{(K)}$ which is of rank $K$ and corresponds to the $K$ largest eigenvalues of $\boldsymbol{X}$. This projects the data matrix $\boldsymbol{X}$ into a $K$-dimensional Euclidean "semantic" space. Formally,
+
+\begin{align}
+  \boldsymbol{X} \approx \boldsymbol{X}_{(K)}
+    &= \boldsymbol{U} \boldsymbol\Sigma \boldsymbol{V}^T
+\end{align}
+
+
+
+
+$\boldsymbol{U}$ and $\boldsymbol{V}^T$ are orthonormal matrices and $\boldsymbol\Sigma$ is a diagonal matrix of singular values. New documents, $\boldsymbol{X}'$ may be embedded by right multiplying them by the projection matrix, $\boldsymbol\Lambda = [\boldsymbol\Sigma \boldsymbol{V}^T]^{-1}$.
+
+A key limitation LSI brings is that there is no obvious way to choose $K$, the embedding dimension. This problem plagues nearly all models that follow it.
+
+## Probabilistic Latent Semantic Inexing
+Probabilistic Latent Semantic Indexing (pLSI) brings a robabilistic approach to LSI [@hofmann1999probabilistic]. pLSI models a generative process for $\boldsymbol{X}$ where $\boldsymbol{X}$ is explicitly a matrix of integer counts of word occurences. Assuming there are $D$ contexts, $K$ topics, $V$ unique words, $N$ total words and $Nd$ words in the $d$-th document, the process is as follows. For each word, $n$, in context $d$:
+
+1. Draw topic $z_{d,n}$ from $\text{Multinomial}(\boldsymbol\theta_d)$
+2. Draw word $w_{d,n}$ from $\text{Multinomial}(\boldsymbol\beta_{z_{d,n}})$
+3. Repeat 1. and 2. $N_d$ times.
+
+From the above, it's clear that $P(z_k|d) = \theta_{d,k}$ and $P(w_v|z_k) = \beta_{k,v}$. 
+
+
+pLSI is fit using the EM algorithm to find the values of parameters in $\boldsymbol\Theta$ and $\boldsymbol{B}$ that maximize the joint likelihood of $\boldsymbol{X}$. The likelihood of a single word in a single document is $P(w_v, d) = P(d)P(w_v|d)$. Taking $P(d) = \frac{N_d}{N}$ and noting that $P(w_v|d) = \sum_{k=1}^K \theta_{d,k} \cdot \beta_{k,v}$ we can derive the joint likelihood
+
+\begin{align}
+  \mathcal{L}
+    &= \prod_{d=1}^D \prod_{v=1}^V \left(\frac{N_d}{N} \sum_{k=1}^K \theta_{d,k} \cdot \beta_{k,v} \right)
+\end{align}
+
+It is stated that pLSI cannot be extended to unseen contexts. David Blei writes "it is not clear how to assign probability to a document outside of the training set" [@blei2002lda]. This does not make sense to me. One can use Bayes's rule to derive a projection matrix, $\boldsymbol\Lambda$, to embed new contexts into the probability space fit by pLSI. A derivation is in Appendix 1. pLSI is alleged to habitually over fit its training data [@shi2019thesis]. And, as with LSI, there's no clear guidance for selecting the number of topics, $K$.
+
+## Latent Dirichlet Allocation
+LDA is a Bayesian version of pLSI. It was developed by David Blei, Andrew Ng, and Michael Jordan to address perceived shortcomings of pLSI [@blei2002lda]. LDA adds Dirichlet priors to the parameters $\boldsymbol\Theta$ and $\boldsymbol{B}$. This modifies the data generating process as
+
+1. Generate $\boldsymbol{B}$ by sampling $K$ topics $\boldsymbol\beta_k \sim \text{Dirichlet}(\boldsymbol\eta), \forall k \in \{1,2,...,K\}$
+2. Generate $\boldsymbol\Theta$ by sampling $D$ documents $\boldsymbol\theta_d \sim \text{Dirichlet}(\boldsymbol\alpha), \forall d \in \{1,2, ..., D\}$
+3. Then for each document, $d$
+    1. Draw topic $z_{d,n}$ from $\text{Multinomial}(\boldsymbol\theta_d)$
+    2. Draw word $w_{d,n}$ from $\text{Multinomial}(\boldsymbol\beta_{z_{d,n}})$
+    3. Repeat 1. and 2. $N_d$ times.
+
+For ease of notation, I refer to the above process as the LDA-DGP throughout this proposal.
+
+The original specification of the LDA-DGP [@blei2002lda] specified that each document's length is drawn from a Poisson random variable. This specification has been dropped from most subsequent work on LDA. Likely this is because in practical applications document lengths are given by the data and do not need to be modeled. It's just as well since specifying a distribution of document lengths for any real-world corpus is likely overly prescriptive.
+
+The above process has a joint posterior of
+
+\begin{align}
+  P(\mathbf{W},\mathbf{Z},\boldsymbol\Theta,\boldsymbol{B}|\boldsymbol\alpha,\boldsymbol\eta)
+    &\propto \left[\prod_{d=1}^D \prod_{n=1}^{n_d} 
+      P(w_{d,n}|\boldsymbol\beta_{z_{d,n}})
+      P(z_{d,n}|\boldsymbol\theta_d)
+      P(\boldsymbol\theta_d|\boldsymbol\alpha)\right]
+      \left[\prod_{k=1}^K P(\boldsymbol\beta_k|\boldsymbol\eta)\right]
+\end{align}
+
+The above posterior does not have an analytical closed form when formulas for the multinomial and Dirichlet distributions are plugged in. So a variety of Bayesian estimation methods have been employed to estimate the model. Blei et. al used variational expectation maximization (VEM). Shortly thereafter, Griffiths and Steyvers developed a collapsed Gibbs sampler for LDA [@griffiths2004scientific]. This sampler is "collapsed" in that the parameters of interest---$\boldsymbol\Theta$ and $\boldsymbol{B}$---are integrated out for faster computation. After iteration is complete, $\boldsymbol\Theta$ and $\boldsymbol{B}$ can be easily calculated. Others have since developed many other MCMC algorithms, discussed more in the next section. 
+
+The priors $\boldsymbol\alpha$ and $\boldsymbol\eta$ may be either asymmetric or symmetric. Asymmetric priors are those where the vector hyper parameter (e.g., $\boldsymbol\alpha$) has different values in each slot. Symmetric priors are those where the vector hyper parameter has the same value in each slot. In the latter case, researchers will often represent the hyper parameter as a scaler rather than a vector. The magnitudes of $\boldsymbol\alpha$ and $\boldsymbol\eta$ affect the average concentration of topics within documents and words within topics, respectively. This is a property of the Dirichlet Distribution.
+
+### Persistent Issues with LDA (and Most Other Topic Models)
+In spite of its being almost 20 years old, LDA has several persistent issues. Many of these are shared by the models that came before and after. Given its continued popularity (and the primary focus of my proposed research) it is worth some detailed discussion.
+
+There is no generally accepted method for choosing hyper parameters---i.e., model specification---for an LDA model [@zhao2015heuristic]. Anecdotally (and backed by a quick search of Stack Overflow) most concern is in choosing $K$, the number of topics. There has been less concern with chosing the prior parameters, $\boldsymbol\alpha$ and $\boldsymbol\eta$. Yet, I have some preliminary evidence that all three parameters need to work in concert, at least to get a semantically coherent model [@jones2019dcr]. A rigorous examination of how all three hyper parameters interact in the LDA-DGP is warranted.
+
+There are two philosophies for selecting $K$, the number of topics or dimensions of embedding for a topic model. The first is to select a value---perhaps including different values for $\boldsymbol\alpha$ and $\boldsymbol\eta$ as well---to optimize a metric. This metric may be the log likelihood [@griffiths2004scientific], perplexity [@zhao2015heuristic], a coherence metric[^notallcoherence] [@stevens2012coherence], or soemthing else [@dieng2020tem]. Chen et al. use a fully-Bayesian approach and put a prior on the number of topics [@dosschoosek]. The second philosophy holds that optimizing for such metrics leads to topics that are too specific for human interpretability [@chang2009tea]. Yet, my experience has not been consistent with Chang and Boyd-Graber. They constructed a topic model on a general news corpus, then had people using Amazon's Mechanical Turk evaluate topic quality. The subjects covered by the model were broad and the audience were not subject matter experts. Meanwhile, I started out modeling scientific research documents for program directors in federal science agencies. These experts were adept at interpreting highly specific topics in their domain. Again, I believe a rigorous examination of how all three hyper parameters interact in the LDA-DGP is warranted.
+
+[^notallcoherence]: Not all coherence [@douven2007coherence] metrics are created equal. Evaluation of several coherence metrics has found considerable variation in correlation with human judgement [@roder2015coherence], [@pietilainen2020coherence]. In particular, the "UMASS" metric [@mimno2011coherence] is widely used, but does not correlate highly with human judgement [@roder2015coherence], [@pietilainen2020coherence].
+
+There has been less attention paid to selecting $\boldsymbol\alpha$ and $\boldsymbol\eta$. A noteable---and influential---exception is Wallach, Mimno, and McCallum's _Rethinking LDA: Why Priors Matter_. They find that $\boldsymbol\alpha$ should be asymmetric and that $\boldsymbol\eta$ should be symmetric and small [@wallach2009rethinking]. Yet this is counter to a proof I wrote in 2014---included in Appendix 2. I find that the expected term frequency of a collection of documents generated by the LDA-DGP is proportional to $\boldsymbol\eta$. Given Zipf's law [@zipf1949]---described in more detail in Section 4---it would appear that a symmetric $\boldsymbol\eta$ constitutes a prior that is impossible in any real corpus. More recently, George and Doss explore an MCMC approach to help select $\boldsymbol\alpha$ and $\boldsymbol\eta$ [@george2018hyperparameters]. Unfortunately, they too assume a symmetric $\boldsymbol\eta$.
+
+There is still no consensus on how to evaluate topic models. Shi et al. divide approaches to evaluation into three categories: manual inspection, intrinsic evaluation, and extrinsic evaluation [@shi2019eval]. Manual inspection---such as the "intruder test" used in [@chang2009tea]---is subjective and labor intensive. Intrinsic evaluation evaluates the model directly against the data on which it was developed. This is measured in goodness of fit metrics such as log likelihood and perplexity, with a coherence metric[^coherenceintrinsic], or other metrics---such as comparing to baseline distributions [@alsumait2009]. Intrinsic evaluation may be measured in-sample or out-of-sample. Extrinsic methods evaluate the performance of topic models agains some external task, such as identifying document class. In both his dissertation [@shi2019thesis] and related publication [@shi2019eval], Shi argues that comparing topic models to "gold standard" synthetic data is a more principled approach. I agree, yet seek to link the process that generated such "gold standard" data---the LDA-DGP---to both laws of language and intrinsic methods to reduce trial and error when developing LDA models.
+
+[^coherenceintrinsic]: Coherence metrics are intrinsic measures that are designed to approximate rigorous manual inspection.
+
+Algorithms to fit LDA models have scaleability issues. Gibbs is a naturally sequential algorithm. When the data set is large, it can be prohibitively slow as the algorithm scales quadratically with the number of documents, topics, vocabulary size, and total number of tokens. Newman et al. developed a distributed "approximate" Gibbs sampler for LDA [@newman2009distributed]. It is implmented in MALLET and the in-development version of _tidylda_. Yet quality of the model---by any intrinsic evaluation metric---decreases when used. This is due to the approximation voiding theoretical guarantees of convergence inherent to MCMC samplers, a point that Newman et al. concede [@newman2009distributed]. VEM has more-easily distributed computations, yet anecdotally VEM gives less coherent topics than MCMC algorithms [@antoniak2020tweet]. A host of other MCMC algorithms have been developed to try to scale LDA to very large corpora [@yao2009streaming], [@lightlda], [@yahoolda], [@chen2015warplda]. One approach uses a variational autoencoder to approximate VEM in a nural network [@srivastava2017]. Even so, the most approachable implementations of LDA still use VEM or collapsed Gibbs.
+
+The LDA-DGP makes strong independence assumptions. Human language is said to have a property called "burstiness" [@rychly2011words]. Burstiness is the idea that words cannot be independent draws from a distribution since they occur in clusters. i.e., Seeing a word once, greatly increases the probability you will see it again. Mimno and Blei developed posterior predictive checks for LDA to detect the degree to which burstiness affects LDA. 
+
+## Related Topic Models
+Researchers have developed many topic models intended to improve upon LDA. This section covers some noteable examples. 
+
+Teh et al. used a hierarchical Dirichlet process (HDP) to determine the number of topics automatically [@teh2006hdp]. They show that HDP has performance advantages over LDA in terms of perplexity. Yet Chen et al. point out that HDP is both computationally intensive, that it is actually a fundamentally different model from LDA, and using it to select the number of topics is not well defined [@dosschoosek]. 
+
+Dynamic topic models (DTM) add a time series component to topic modeling [@blei2006dtm]. By incorporating date of publication, DTMs allow the linguistic mixture of topics to change dynamically over time. Consider an intuitive example; the amount of writing about a given topic changes over time, but also _how_ writers write about that topic changes as well. DTMs require explicit metadata on when a context appeared. 
+
+Topic models are often used to embed contexts into a vector space to aid a supervised task downstream. Supervised LDA (sLDA) incorporates this outcome in the modeling process [@mcauliffe2007supervised]. McAuliffe and Blei find that sLDA improves accuracy of the predictive task and gives improved topic quality over a two-step of LDA then using a separate supervised algorithm.
+
+Two closely-related algorithms are the correlated topic model (CTM) [@blei2007ctm] and structural topic model (STM) [@roberts2019stm]. CTMs modify LDA by placing a log-normal prior on $\boldsymbol\Theta$ to allow modeling the correlations between documents. STMs extend CTMs by allowing the user to declare context-level co-variates, rather than simply trying to estimate them. If no such co-variates are provided, then STM collapses to CTM [@roberts2019stm].
+
+The above models---and many more---encompass a large landscape, but they are not so different. Each of these models effectively embeds their contexts into a probability space. (See Section 2.7.) As a result, I hypothesize that much of my proposed research should extend---or can be modified to extend---to these models. Perhaps LDA is not the "best" model long term. But its simplicity and widespread use make it a good place to start. 
+
+## Text Embeddings and Distributional Semantics
+Word embeddings were developed in parallel with topic models, beginning with the neural language model of Bengio et al. [@bengio2003neural]. The idea is to represent words as distributions embedded into a vector space such that proximity corresponds to semantic similarity. The idea of distance in vector space corresponding to semantic distance is known as _the distributional hypothesis_ and forms the basis of distributional semantics [@eisenstein2019introduction]. The distributional hypothesis states that "you shall know a word by the company it keeps" [@firth1957synopsis]. In other words, a word's meaning may be inferred from the context in which it appears.[^context] Since 2003, word embeddings have been extended to cover larger linguistic units such as sentences and documents [@le2014distributed] and have taken on the more general moniker "text embeddings". Noteable models include word2vec [@mikolov2013distributed], GloVe [@pennington2014glove], ELMo [@peters2018deep], and more.
+
+[^context]: I have heretofore been using the general word "context" instead of "document" to discuss topic models. This is intentionally related to text embeddings and discussed more in Section 2.7, _LDA for Corpus Statistics_.
+
+One popular method for constructing this "context" is a term co-occurrence matrix of _skip grams_. Skip grams count the number of times each word in the vocabulary occurrs in a window around a target word [@mccormick2016word2vec]. For example, a skip gram window of 5 counts the number of times each word appears within five words to the left or five words to the right of the target word. The result is a symmetric $V \times V$ matrix of integers, with each row and column representing a word. Levy and Goldberg show that neural word embeddings may be viewed as a factorization of this matrix [@levy2014neural].
+
+Text embedding research brings exciting possibilities to distributional semantics. Researchers have found that comparisons and compositions of embeddings may be linked to semantic meaning. For example, Mikolov et al. found similarities between the vectors representing countries and their capitals [@mikolov2013distributed]. Compositions between word vectors may also capture semantic meaning as demonstrated by the oft-used "$\text{king} - \text{man} + \text{woman} \approx \text{queen}$" example [@mikolov2013linguistic]. And alignment between vector spaces across languages promises the ability to compare meaning of words and phrases across languages [@sogaard2019cross].
+ 
+As with topic models, there is no principled way to choose $K$, the number of embedding dimensions. Anecdotally, this seems to concern the distributional semantics community far less than the topic modeling community. Yet, as I describe below, I believe the two communities are actually working on the same class of models, in spite of their disjoint lineage.
+
+## LDA for Corpus Statistics
+Latent Dirichlet Allocation has lost favor in machine learning circles. A colleague once introduced me with "This is Tommy. He still studies LDA, but otherwise he's ok." Another asked me without any irony, "who still uses LDA?!?!" This sentiment is unfortunately widespread. Jacob Eisenstein---a research scientist at Google---recently published _Introduction to Natural Language Processing_---one of the first comprehensive textbooks on the subject since deep learning models came to dominate in NLP [@eisenstein2019introduction]. He does not mention LDA at all in the chapter on distributional semantics (pages 309--332) and only mentions it in a footnote in the chapter on discourse (on page 358).   
+
+Yet LDA is still in widespread use in the digital humanities and computational social science. Machine learning may have moved on, but applications of LDA are widespread in these less explicitly technical disciplines. This points to a need to make LDA more accessible [@boydgraber2017applications, ch. 10.2]. Accessibility means computational tools that are easy to use as well as a deeper understanding of _how_ these models may be deployed to answer questions these disciplines have.
+
+Moreover, I argue that the distinction between "topic models"---of which LDA is a member---and "text embeddings" made in the machine learning community is meaningless. Viewed through the lense of topology, LDA and newer text embeddings belong in the same class of models. In topology, an embedding, $f$, is a mapping between topological spaces. $f: \boldsymbol{X} \rightarrow \boldsymbol{Y}$ means that $f$ maps a point in topological space $\boldsymbol{X}$ to a point in topological space $\boldsymbol{Y}$. From this perspective, LDA maps $\boldsymbol{X}$---points in a $V$-dimensional integer space---to $\boldsymbol\Theta$---points in a $K$-dimensional probability space. Newer text embeddings map from $\boldsymbol{X}$ to (usually) Euclidean space $\boldsymbol{Y}$.[^eattransformers]
+
+[^eattransformers]: We can extend this logic to encompass Transformers as well. A multilayer neural network may be viewed through this lense as a collection of embeddings $\{f_0, f_1, ..., f_O\}$ such that $f_0: \boldsymbol{X} \rightarrow \boldsymbol{H_1}$, $f_1: \boldsymbol{H_1} \rightarrow \boldsymbol{H_2}$, and so on until $f_{o-1}: \boldsymbol{H}_{o-1} \rightarrow \boldsymbol{O}$. $\boldsymbol{X}$ is the input layer; $\boldsymbol{H}_i$ are hidden layers; and $\boldsymbol{O}$ is the output layer. One might then consider relationship between contexts at any layer $\boldsymbol{H}_i$ or $\boldsymbol{O}$. 
+
+LDA is also criticized for its overreliance of the bag of words assumption. This conflates data pre-processing with the model itself. For this reason, I prefer to refer to the rows of $\boldsymbol{X}$---the data being modeled---as "contexts" rather than "documents". A context may be a whole document, a chapter, a paragraph, a sentence, etc. Or a context may incorporate proximity or word order. For example a context could be the count of times each word in a corpus appears around a target word, as with skip-grams. A context could also be a count of each word appearing after or before a target word. I'd call these lead-grams and lag-grams, respectively. It's true that within a context, the bag-of-words assumption still holds. So, LDA cannot be a full sequence to sequence model. However, the way a context is constructed may encode proximity and order. And that construction affects the interpretations of probabilities resulting from the model. I have done this explicitly with LDA when writing the vignettes for a previously-released R package, _textmineR_ [@textminerembeddings]. Just this year, Adji Deng co-authored a paper with David Blei constructing the "embedding topic model" in a similar fashion [@dieng2020tem].[^missedit]
+
+[^missedit]: I published the vignette doing this with LDA in 2017 and made the connection two years earlier. Coulda shoulda woulda published it then. But if I'm going to get scooped in topic modeling, I'm glad it was on a paper co-authored with David Blei.
+
+I also argue that LDA and other probabilistic topic models have an advantage _because_ they embed into a probability space. As we know from traditional statistics, probability spaces are well-suited to quantify uncertainty around claims and statistical inferences made from data---with or without linguistic origins. And while I have no plans to address this in my dissertation research, I hypothesize that embedding to probability spaces may aid tasks in distributional semantics such as uncovering analogies and cross-lingual embedding alignment. Probability spaces have well-defined relationships, transformations, and methods for composition. Euclidean spaces have fewer constraints on operations within them, leading to greater researcher degrees of freedom. 
+
+With this in mind, I believe that LDA is a good candidate of study for corpus statistics for three reasons. First, LDA is a parametric Bayesian statistical model, nothing more. This allows for uncertainty quantification, model diagnostics, etc. in line with established statistical practices. Second, as stated above, LDA embeds into probability spaces with the benefits they bring. And lastly, LDA is a generative model of language. This allows us to use simulation studies of the LDA-DGP to help develop methods to help build models and diagnose model misspecification, as described in section 4 below.
+
+LDA is a good candidate for corpus statistics, but corpus statistics can also be good for LDA. In my opinion, the tension over intrinsic evaluation versus human interpretability---as highlighted by Chang et al. [@chang2009tea]---is premature. LDA has an identification problem. If one cannot tell if a model is pathalogically misspecified, how can one rely on any interpretation of it? If a linear regression model's residuals are clearly not Gaussian distributed with mean zero, one does not attempt to interpret its coefficients. We should expect the same from LDA and related models.
+
+For LDA, corpus statistics should focus on three tasks: detect pathological model misspecification[^notruemodel] (e.g., choice of $K$, $\boldsymbol\alpha$, and $\boldsymbol\eta$), develop metrics to aid researchers in justifying a model's specification, and quantifying uncertainty around claims a researcher might want to make using a model. Relating empirical laws of language to the LDA-DGP is a first step for the former two tasks. The latter task relates closely to interpretation and depends on a model being statistically valid.
+
+[^notruemodel]: One might argue that humans do not write using the LDA-DGP and thus no "correct" specification exists. They would be right! Yet, "this model is not right" is a much narrower statement than "this model is right". To use linear regression as an example again, having Gaussian distributed residuals does not mean that one specified the "right" model. But having non-Gaussian residuals means the model is wrong. 
+
+# Fine Tuning Latent Dirichlet Allocation for Transfer Learning
+
+As stated in Section 1, properties of language make the fine tuning paradigm of transfer learning attractive for statistical analyses of corpora. The pervasiveness of power laws in language---the most famous example of which is Zipf's law [@zipf1949]---mean that we can expect any corpus of language to miss relevant information. (i.e., Linguistic information necessary for understanding the corpus of study would be contained in a superset of language around said corpus.) Intuitively, humans approach corpus analytics in a way that on its surface appears consistent with fine tuning transfer learning. Humans have general competence in a language before consulting a corpus to learn a new subject---or even just to have human analysis of the corpus. Also as stated in Section 1, LDA has attractive properties as a model for statistical analyses of corpora. Its very nature allows us to use probability theory to guide model specification and quantify uncertainty around claims made with the model. 
+
+I have developed an algorithm for fine tuning transfer learning with LDA models. The algorithm is currently implemented in a collapsed Gibbs sampler, but should generalize to any MCMC sampler for LDA. This approach enables 5 related use cases with LDA models. 
+
+1. Pre-training a base model on a large corpus and then fine-tuning it on a smaller corpus for specific analyse,
+2. Time-series analyses of corpora where both the topic prevalence and distribution of words within topics changes over time,
+3. Developing models on streaming corpora, where new documents[^docvcontext] are continually being added,
+4. Allowing subject matter experts to seed relationships between words to topics prior to model development, and
+5. Allowing a researcher to begin training a model, stop prematurely to inspect the posterior, then resume training almost exactly where they left off if, for example, the model has not yet converged.
+
+[^docvcontext]: Here, I do mean documents. Yet there is no barrier to researchers using them to re-compute contexts and updating their models that way.
+
+## Related Work
+
+Related work from LDA and other probabilistic topic models falls into three categories. The first category contains topic models that explicitly model a topic's evolution over time [@blei2006dtm], [@wang2012dynamic]. These models differ from transfer learning in that time is explicitly part of the model, rather than being updated post-hoc. The second category contains models that allow external information to guide the development of topics. External information may be in the form of supervised outcomes [@mcauliffe2007supervised] [@ramage2009labled] [@andrzejewski2009latent], seeded by model structure [@jagarlamudi2012transfer], seeded in the prior [@andrzejewski2009], or constructed interactively with subject matter experts [@hu2014interactive]. The third category contains models designed for on-line training of streaming document collections [@alsumait2008] [@hoffman2010online].
+
+My algorithm may be viewed as an extension of alsumait, Barbará, and Domeniconi [@alsumait2008]. Their approach encodes the topics from the previous time slices into the prior, $\boldsymbol\eta$, for the next time slice. More formally
+
+\begin{align}
+  \boldsymbol\eta_k^{(t)} = \boldsymbol\omega^{(\delta)} \cdot \boldsymbol\beta_k^{(t-1)}
+\end{align}
+
+where $\boldsymbol\eta_k^{(t)}$ is the prior for the $k$-th topic for the current model, $\boldsymbol\omega^{(t)}$ is a vector of weights with one entry for the previous $\delta$ models, and $\boldsymbol\beta_k^{(t-1)}$ is a _matrix_ whose rows correspond to the posterior of the $k$-th topic for the previous $\delta$ models. In essence, $\boldsymbol\eta_k^{(t)}$ is a weighted linear combination of the last $\delta$ posterior distributions for the $k$-th topic. The weights sum to $1$ such that $\sum_{j=t-\delta-1}^{t-1} \omega_j = 1$. An implication of this is that $\boldsymbol\eta^{(t)}$ is a matrix, not a vector as in the vanilla version of LDA. And by including information from the previous $\delta$ periods---as opposed to just the last period---this implementation loses the Markov property of stochastic processes. 
+
+## Proposed Contributions
+
+The fine tuning paradigm of transfer learning requires two mechanisms:  a mechanism to regulate between the base model's influence and tuning data set's influence over the resulting model and a mechanism to initialize "weights" where the base model left off---rather than at random. My algorithm addresses both mechanisms and two more: the ability to dynamically add new topics not in the base model and a method to add additional vocabulary words. 
+
+### Brief Description of My Algorithm
+
+#### Mechansim to regulate influence between base model and data
+I use a very similar mechanism as alsumait, Barbará, and Domeniconi's [@alsumait2008] to encode prior information and tune between the base model's and current data set's influence. The prior for words over topics, $\boldsymbol\eta$, is a the base model's $\boldsymbol{B}$, weighted to control its influence. Formally
+
+\begin{align}
+  \boldsymbol\eta^{(t)} = \boldsymbol\omega^{(t)} \odot \boldsymbol{B}^{(t-1)}
+\end{align}
+
+This specification is similar to alsumait et al.'s---in that $\boldsymbol\eta^{(t)}$ is a weighted matrix---but it is not identical. Rather than encoding a linear combination of past posteriors into the prior, it encodes only the previous run's posterior. My specification is simpler and retains the Markov property. Yet if one were to daisy chain many models together---as alsumait et al. do---the previous $t-\delta-1$ models still influence model $t$ through the posterior of model $t-1$.[^equivalence]
+
+[^equivalence]: I've not done so, but I hypothesize one could derive equivalence or near equivalence between the two approaches.
+
+The $k$-th entry of $\boldsymbol\omega^{(t)}$ is a weight that controls the concentration of topic $k$ based on the previous model. $\boldsymbol\omega^{(t)}$ is set a-priori by the researcher. This allows the researcher to give certain topics more or less weight in development of the fine tuned model. The exact influence tuned by $\boldsymbol\omega^{(t)}$ is something I still need to determine.[^intuition]
+
+[^intuition]: Conjugate priors can be interpreted as adding data. My intuition is that there may be some  $\boldsymbol\omega^{(t)*}$ that will weight the prior proportionally to the volume of data used to train the base model. This value may be useful as a default as well as providing context for a researcher who wants to choose their own weight.
+
+This mechanism is also how one can seed expert knowledge into a model. In this case, there is no base model. But if one wants to encode lexical information in $g$ topics, they can do so in $g$ rows of $\boldsymbol\eta$; the remaining $K-g$ rows remain identical, a default prior for other topics.
+
+#### Mechanism to initialize where the base model left off
+When fine tuning a pre-trained neural network, one initializes the weights of a model to be the values from the base model, rather than initializing at random. LDA does not have "weights" but MCMC samplers have analogues, matrices of counts: $\boldsymbol{Cd}$ and $\boldsymbol{Cv}$. These count the number of times each topic was sampled in each context and for each word. 
+
+At each iteration $(i)$, the sampler loops over each context, $d$, and each instance, $n$, of each word in that context, $w_{d,n}$. For each word, a topic is sampled according to the below probability
+
+\begin{align}
+  P(z_{d,n}^{(i)} = k)
+    &\propto \frac{Cv_{k,v}^{(i)} + \eta_{k,v}}{\sum_{v=1}^V Cv_{k,v}^{(i)} + \eta_{k,v}} \cdot 
+      \frac{Cd_{d,k}^{(i)} + \alpha_k}{\left(\sum_{k=1}^K Cd_{d,k}^{(i)} + \alpha_k\right) - 1}
+\end{align}
+
+At the end of $I$ iterations, the final posteriors[^expected] for $\boldsymbol\Theta$ and $\boldsymbol{B}$ are calculated with
+
+\begin{align}
+  E[\theta_{d,k}]
+    &= \frac{Cd_{d,k}^{(I)} + \alpha_k}{\sum_{k=1}^K Cd_{d,k}^{(I)} + \alpha_k} \\
+  E[\beta_{k,v}]
+    &= \frac{Cv_{k,v}^{(I)} + \eta_{k,v}}{\sum_{v=1}^V Cv_{k,v}^{(I)} + \eta_{k,v}}
+\end{align}
+
+[^expected]: Technically, these are expected values as the true posterior distributions are given by $\boldsymbol\beta_k \sim \text{Dirichlet}(\boldsymbol{Cv}_k + \boldsymbol\eta_k)$ and $\boldsymbol\theta_d \sim \text{Dirichlet}(\boldsymbol{Cd}_d + \boldsymbol\alpha)$
+
+My algorithm allocates $\boldsymbol{Cd}^{(t)}$ and $\boldsymbol{Cv}^{(t)}$ in proportion to $\boldsymbol{Cd}^{(t-1)}$ and $\boldsymbol{Cv}^{(t-1)}$. In standard training for LDA, $\boldsymbol{Cd}$ and $\boldsymbol{Cv}$ are initialized at random. For transfer learning, one must initialize $\boldsymbol{Cd}^{(t)}$ and $\boldsymbol{Cv}^{(t)}$ to the same state as $\boldsymbol{Cd}^{(t-1)}$ and $\boldsymbol{Cv}^{(t-1)}$ respectively. The challenge lies in the fact that $\sum_{d,k}\boldsymbol{Cd}_{d,k}^{(t-1)} = \sum_{k,v}\boldsymbol{Cv}_{k,v}^{(t-1)} = \sum_{d,v} \boldsymbol{X}_{d,v}^{(t-1)}$ yet $\sum_{d,v} \boldsymbol{X}_{d,v}^{(t-1)} \neq \sum_{d,v} \boldsymbol{X}_{d,v}^{(t)}$. My algorithm[^checkgithub] addresses this constraint at a high leve as described below:
+
+1. Project $\hat{\boldsymbol\Theta}^{(t)}$ by using $\boldsymbol\Lambda^{(t-1)}$ as described in Appendix 1,
+2. Adding new vocabulary words from $\boldsymbol{X}^{(t)}$ by appending them to $\boldsymbol{B}^{(t-1)}$ and allocating uniform mass for these new terms proportional to the median of $\boldsymbol{B}^{(t-1)}$ and then normalizing the rows of this new $\hat{\boldsymbol{B}}^{(t)}$,
+3. Solving for the approximate initial values of $\boldsymbol{Cd}^{(t)}$ and $\boldsymbol{Cv}^{(t)}$ using equations (7) and (8),
+4. Rounding and re-alocating counts in $\boldsymbol{Cd}^{(t)}$ and $\boldsymbol{Cv}^{(t)}$ so that they are both integer matrices and ensure
+    - the row sums of $\boldsymbol{Cd}^{(t)}$ equal the row sums of $\boldsymbol{X}^{(t)}$ 
+    - the column sums of $\boldsymbol{Cd}^{(t)}$ equal the row sums of $\boldsymbol{Cv}^{(t)}$
+
+There is more detail to be described. For brevity in this document, I will save that detail for the final research paper.
+
+[^checkgithub]: Source code for the algorithm may be found at https://github.com/TommyJones/tidylda/blob/main/R/refit.tidylda.R
+
+#### Mechanism to dynamically add topics
+New topics are added by appending rows to $\boldsymbol\eta^{(t)}$. For example if $\boldsymbol\eta^{(t-1)}$ has $K$ topics and I wish to add 3 topics during fine tuning, $\boldsymbol\eta^{(t)}$ has $K+3$ rows. Similar to seeding topics, these new rows are initialized with a standard prior, proportional to the column means of $\boldsymbol{B}^{(t-1)}$. If a researcher wants to retire topics, they may remove those rows from $\boldsymbol\eta^{(t-1)}$ before fine tuning.
+
+#### Mechanism to add vocabulary
+New vocabulary is added by appending columns to $\boldsymbol\eta^{(t)}$. I initialize values for new words as the median of $\boldsymbol\eta^{(t-1)}$, a flat prior. This, admittedly, is not consistent with Zipf's law. I am open to exploring new heuristics.
+
+### What Needs to Be Done
+Below are the tasks I propose putting into my dissertation for this study.
+
+1. A more thorough literature review,
+2. A formal statement of my transfer learning algorithm,
+3. Derivation of a new log likelihood for an LDA model where $\boldsymbol\eta$ is a matrix, rather than a vector,
+4. Analytical exploration of the effect $\boldsymbol\omega^{(t)}$ has for tuning tradeoff between the base model and new data,
+5. A simulation experiment to isolate the effects of
+    - Using $\boldsymbol\eta^{(t)} = \boldsymbol\omega^{(t)} \odot \boldsymbol{B}^{(t-1)}$ as a prior and initializing $\boldsymbol{Cd}^{(t)}$ and $\boldsymbol{Cv}^{(t)}$ at random,
+    - Using a standard $\boldsymbol\eta$ prior and initializing $\boldsymbol{Cd}^{(t)}$ and $\boldsymbol{Cv}^{(t)}$ based on $\boldsymbol{Cd}^{(t-1)}$ and $\boldsymbol{Cv}^{(t-1)}$
+    - Using both $\boldsymbol\eta^{(t)} = \boldsymbol\omega^{(t)} \odot \boldsymbol{B}^{(t-1)}$ as a prior and initializing $\boldsymbol{Cd}^{(t)}$ and $\boldsymbol{Cv}^{(t)}$ based on $\boldsymbol{Cd}^{(t-1)}$ and $\boldsymbol{Cv}^{(t-1)}$
+    - Exploration of different values of $\boldsymbol\omega^{(t)}$
+6. An eperiment using real data (corpora TBD)
+    a. Choose a base data set (for example, English language Wikipedia)
+    b. Fine tune on a specific subject area (for example, abstracts of research presented at the ACL conference)
+    c. Analysis of topic presence, absence, and linguistic change in the latter data set
+    d. Daisy chaining multiple years together and letting topics evolve in a time series (e.g., multiple years of abstracts presented at the ACL conference)
+
+
+### Prerequisites and Extensions
+Acknowledging that I have already implemented the algorithm in question[^buynow], I have identified two pre-requisites necessary for me to accomplish the proposed research, above. First, the Gibbs algorithm---where this is already implemented---is too slow to scale to large corpora. I want to implement the _WarpLDA_ algorithm [@chen2015warplda]---which is natively parallel while retaining Metropolis Hastings convergence guarantees---so that I may train a base model on a large corpus, such as the English language Wikipedia. The full promise of pre-train then fine-tune cannot be realized if my implementation cannot scale to use corpora on the scale of state of the art NLP models. Second, I would like to complete my study of the LDA-DGP so that (a) my simulation study is justified---producing simulations that reproduce empirical laws of language---and (b) in the hopes that it will inform choices of hyper parameter values so that the study using real data has models that are reasonably well-specified. 
+
+[^buynow]: Available in the in-development _tidylda_ package at https://github.com/TommyJones/tidylda/.
+
+I am considering an extension to study how to quantify uncertainty in claims one might make with a fine-tuned model. A fine tuned model chains together two data sets---with two different sample sizes---with a base model that introduces error. When quantifying uncertainty to a claim---e.g., "This topic is more prevalent in corpus $(t)$ than in corpus $(t-1)$"---one must consider the relative weights of the two data sets and error introduced by both the base model and fine tuned model. I do believe that exploring this topic can have major impact in corpus statistics, the digital humanities, and perhaps other fields. I also believe that this would greatly expand the scope of my dissertation research. Moreover, this extension is also dependent on my study of the LDA-DGP. If that study is inconclusive, then I'm not sure I can obtain valid uncertanty quantification.
+
+I am also considering an extension to make $\boldsymbol\alpha$ a matrix as well. For use cases where the context itself updates, one might wish to initialize $\boldsymbol{Cd}^{(t)}$ from $\boldsymbol{Cd}^{(t-1)}$. 
+
+# Studying the LDA-DGP
+
+LDA is a lantent variable model, as a result it can be challenging to study. We do not observe "ground" truth topics in real data, against which to compare the correctness of a topic model. Extrinsic evaluation method compare a topic model's results against a different ground truth---one that we do observe, such as a document's class. Yet if a researcher's concern is document classification, better to build a supervised classifier. LDA's strength is in its unsupervised nature, enabling us to discover that which we don't already know. It appears we have a catch 22; we want to use LDA as a tool of discovery, yet without ground truth, how do we know if our discovery is true or a statistical fluke? 
+
+Fortunately, LDA models a data generating process, the LDA-DGP. Researchers can, and do, generate data sets by sampling from the LDA-DGP where they have chosen $K$, $\boldsymbol\alpha$, and $\boldsymbol\eta$ themselves. They then may use these simulated data sets to compare a model against a synthetic ground truth. Such "simulation studies" have a lengthy history in the statistical literature, going back to 1975 or further [@Hoaglin1975].
+
+Yet one cannot choose arbitrary parameters in the LDA-DGP and expect the results to reflect the statistical properties of language. In 2014, when conducting my own simulation study, I discovered that common values used for $\boldsymbol\eta$ cannot produce corpora consistent with Zipf's law [@zipf1949]. I include a proof (derived then) in Appendix 2.[^phd] Figure 1 plots data simulated from the LDA-DGP against an actual corpus of NSF grant abstracts [@jones2014zipf]. The simulation corresponding to symmetric $\boldsymbol\eta$---by far the most common specification since Wallach et al. in 2009 [@wallach2009rethinking]---does not conform to a power law, which is linear in log-log space. Yet setting $\boldsymbol\eta$ proportional to a power law does produce power law distributed data, similqr to the actual NSF abstracts data.[^pardon] Language has such stark statistical properties---i.e. power law distributions---that the validity of a simulation that cannot produce such properties is suspect.
+
+[^phd]: Small as it was, this is the discovery that prompted me to seek a PhD. I wanted to complete this research, but knew that I could not do it without the structure and support of a formal program.
+
+[^pardon]: Pardon the use of $\beta$ rather than $\eta$ in the figure. The figure is old and does not conform to my current notation scheme. I made the switch so that _tidylda_ would be more consistent with popular text analysis packages in the R ecosystem.
+
+```{r nsf-corpus, fig.align = 'center', out.width = "50%", fig.cap = "Comparing two simulated data sets to word frequencies in an actual corpus of NSF grant abstracts. The simulation generated with a symmetric prior for words over topics---as is commonly used---is not consistent with Zipf's law. It represents an impossible prior. From Jones and St. Thomas, 2014."}
+knitr::include_graphics(here::here("figures", "nsf-sim.png"))
+```
+
+Yet, I believe that producing data with statistical properties of human language from the LDA-DGP means more than the low bar of one's simulation study not being invalid. I believe that if the LDA-DGP can produce data with that shares the statistical properties of human language, then LDA is a valid model for analyzing corpora of human language. Put another way: When conducting a simulation study, Shi et al. state "our analysis is grounded on the assumption that a hidden topic structure exists in the texts" [@shi2019eval]. I go further: If the LDA-DGP can produce data consistent with statistical laws of language, then _this is the correct assumption to make_. 
+
+I don't want to over state my case. Techniques---whether analytical of empirical---that discover the "right" model on simulated data can guide the researcher on real data sets. Yet it is unlikely that there is a "right" model for any real corpus. This is why I refer to "detecting pathologically misspecified models", rather than "finding the right model", throughout this document. It may also be that the LDA-DGP cannot perfectly reproduce relevant statistical laws of language. If that is the case, researchers must decide whether LDA is "good enough" or if a different topic model---for example CTMs [@blei2007ctm] or STMs [@roberts2013stm]---is a better choice. 
+
+My objectives with this research are as follows: I wish to analytically link the LDA-DGP to relevant statistical laws of language---as I have done in Appendix 1, discover rules and heuristics from statistics on $\boldsymbol{X}$ to guide LDA model specification, and discover diagnostic statistics to discover whether an LDA model is pathologically misspecified. The remainder of this section is organized as follows: Section 4.1 summarizes related work from complex systems theory, stochastic simulation, and---of course---topic modeling. Section 4.2 outlines the approach I propose for this study.
+
+## Related Work
+
+Work related to studying the LDA-DGP pulls from two---seemingly disparate---fields: complex systems theory and---of course---topic modeling. Complex systems theory deals in part with the emergence of power law distributions--as exemplified by some empirical laws of language---from complex systems [@cioffi2008power]. Stochastic simulations are experiments where sythetic data is studied to gain insight into statistical methods that would not be possible with real-wold data [@morrissimulationstudies]. Topic modeling concerns itself with the study of LDA and LDA-like models.
+
+### Simulation Studies for LDA
+
+Synthetic corpora appear commonly in topic modeling research. Appendix 3---a copy of Shi et al.'s supplimentary materials, Table S3 [@shi2019eval]---lists 14 works using synthetic corpora to study topic models. Most use some flavor of the LDA-DGP and focus on only one or two aspects of comparison between model and "ground truth" in the synthetic data set. I am unaware of any simulation study for LDA that explicitly links the data generating process to any of the empirical laws of language except for [@shi2019eval; @shi2019thesis]. Even so, they do not use the LDA-DGP and compare only to Zipf's law (described below).  Boyd-Graber, Hu, and Mimno suggest the use of semi-synthetic data---i.e., drawing simulations from the posterior---to capture properties of natural language [@boydgraber2017applications].[^toyproblems]  
+
+[^toyproblems]: They also refer to stochastic simulation studies for LDA as "toy problems". As you may have guessed, I strongly disagree. But their position is understandable insomuch as it is based on the assumption that LDA cannot reproduce properties of natural language. I have already demonstrated that it can reproduce at least one such property [@jones2014zipf].
+
+Shi et al. go further than others and argue that use of synthetic corpora is a "principled approach" to evaluating topic models [@shi2019eval; @shi2019thesis]. Their approach does reproduce Zipf's law of language. Yet it does not use the LDA-DGP. So, it may represent a principled approach to studying probabilisitic topic models with simulated data, but it is a parallel path to the one I propose. Using the LDA-DGP specifically allows for stronger statements related to pathological misspecification of LDA models. e.g., "Under the true model, then I would expect to see outcome A. Instead I see outcome B. Therefore, my model must be misspecified." An analogue from linear regression might be, "under the true model, residuals are distributed _i.i.d._ Gaussian with mean zero. The residuals of my model are not _i.i.d._ Gaussian with mean zero. Therfore, my model must be misspecified."
+
+### Empirical Language Laws
+
+Altmann and Gerlach describe 9 universal laws purported to describe statistical regularities in human language [@altmann2015laws]. These laws are Zipf's [@zipf1949], Heap's [@egghe2007untangling], Taylor's [@gerlach2014], Menzerath-Altmann [@altmann1980prolegomena], Recurrence [@zipf1949], Long-range correlation [@damerau1973tests], Entropy scaling [@altmann2015laws], Information content [@zipf1949], and various network topology laws [@altmann2015laws]. 
+
+Of these laws, I believe three are most relevant: Zipf's, Heap's, and Taylor's laws.  The laws of Menzerath-Altmann, Recurrence, Long-range correlation, and Information content refer to properties of subwords (e.g. length to information content), order of words, or proximity between words. None of these does the LDA-DGP purport to model. The law of Entropy scaling links entropy---in the information theoretic sense [@shannon2001mathematical]---to the number of words in a block of text. The LDA-DGP may or may not be able to re-produce this law. Similarly, some network views of a corpus may or may not apply to the LDA-DGP. Both may warrant future exploration but are less directly macroscopic properties of a corpus than Zipf's, Heap's, and Taylor's laws.  
+
+#### Zipf's law
+Zipf's law states that the frequency of a word is inversely proportional to the power of its frequency-rank. Zipf's law is not unique to any language; it appears to apply to all of them [@cancho2003]. Zipf's law has also been applied to the sizes of cities [@arshad2018zipf], casualties in armed conflict [@gillespie2015], and more. Zipf's law is a statement of a word's frequency and its rank. Yet if word frequencies in a corpus are plotted as a histogram, the power law relationship holds [@sole2008].
+
+Empirical distributions of Zipf's law for large corpora have demonstrate a relationship somewhat inconsistent with that predicted by Zipf's law. Some have proposed that the frequency-to-rank relationship is actually a set of broken power laws with one parametarization for the head of the distribution, another for the body, and a third parametarization for the tail. Yet, Ha et al. find that this is a trick of tokenization. "Language is not made of individual words but also consists of phrases of 2, 3 and more words, usually called n-grams for n=2, 3, etc." When including n-grams in both English and Chinese corpora, Ha et al. find that Zipf's law holds through the tail [@ha2002zipf]. Mandlebrodt developed a generalization of Zipf's law that accounts for behavior at the head of the distribution [@mandelbrot1965information].
+
+Formally, Zipf's law is
+
+\begin{align}
+  F(r) \propto r^{-\gamma} \text{ for } \gamma \geq 1, r > 1
+\end{align}
+
+where $r$ is a word's rank, $F(r)$ is the frequency of a word's rank, and $\gamma$ is a parameter to be estimated. For human language $\gamma \approx 1$ [@cancho2003] and can be found through maximum likelihood estimation [@gillespie2015]. Altmann and Gerlach find $1.03 \leq \gamma \leq 1.58$ depending on the corpus and estimation method [@altmann2015laws]
+
+Goldwater et al. explore the relationship between Zipf's law and then standard statistical models of language [@goldwater2011zipf]. They develop a framework for producing power law word frequencies in two stages. Critically, they link this framework to several models closely related to LDA but do not extend it to the LDA-DGP itself.
+
+#### Heap's law
+Heap's law states that the number of unique words in a corpus, $V$, scales sublinearly with the total number of words in a corpus, $N$ [@heaps1978information]. Heap's law is another power law. Unlike Zipf's law, it is an increasing power law.
+
+\begin{align}
+  V \propto N^\delta \text{ for } N > 1, 0 < \delta < 1
+\end{align}
+
+There are several ways to compute Heap's law for a single corpus. Altmann and Gerlach use two methods: compute $V$ and $N$ for each document in the corpus and progress over each word in a corpus calculating new values of $V$ and $N$ as each word is added. The latter approach works for single documents of sufficient length as well, such as a book [@altmann2015laws].
+
+#### Taylor's law
+Taylor's law is a third power law relationship, originally posed in the context of ecology by Lionel Roy Taylor [@taylor1961aggregation]. In linguistics, Taylor's law states that the standard deviation of the total number of words is proportional to the power of the mean of the total number of words. Formally,
+
+
+\begin{align}
+  \sigma(N) \propto \mu(N)^\epsilon \text{ for } \mu(N) > 1
+\end{align}
+
+where $\sigma(N) = \sqrt{\mathbb{V}(N)}$, $\mu(N) = \mathbb{E}(N)$, and $\epsilon$ is to be fit from data.
+
+#### Relationship between laws
+Gerlach and Altmann explore the relationship between these three laws [@gerlach2014]. Under a commonly used model of a Poisson process, the relationship predicted is that $\gamma = \delta^{-1}$ and $\epsilon = 1/2$. Yet they find that this null Poisson model fits the data poorly, especially with Taylor's law. Instead, they use a topic model---where relative frequencies of words are different in each topic---to find a relationship between the laws that better fits the data. 
+
+Candidly, I need deeper study of Gerlach and Altmann (2014). Casual reading demonstrates that they do use a variant of LDA for their topic model. But I don't yet understand their exact approach. And Gerlach's later work in [@shi2019eval] uses a non-LDA data generation mechanism. It is possible that much of the work I propose to link the LDA-DGP to these three laws has already been completed. And it is also possible that Gerlach and his colleagues have already discovered a critical flaw with the approach I propose. I have more work to do here.
+
+## Proposed Contributions
+
+For this portion of my dissertation research, I propose making the following contributions.
+
+1. Producing formal mathematical statements linking the LDA-DGP to Zipf's, Heap's, and Taylor's laws of language as well as other corpus statistics such as correlation between words in two contexts,
+2. Use principles of statistical design to plan and produce many synthetic corpora using the LDA-DGP that conform to statistical laws of human language and comprise a representative sample of the population of corpora that researchers may study with LDA,
+3. Using (1) and (2) above, attempt to find rules or heuristics for specifying $K$, $\boldsymbol\alpha$, and $\boldsymbol\eta$ based on properties of the corpus, and
+4. Using (1) and (2) above, diagnose the effects of model misspecification and attempt to develop diagnostic statistics or tests one may apply to an LDA model to detect pathological misspecification.
+
+For (2), I intend to use principles from statistical design---recommended for such studies [@morrissimulationstudies]. Considerations for producing a collection of simulated data sets include varying observable corpus variables---the number of documents, document lengths, vocabulary sizes, correlations between documents, and possibly more---and varying latent LDA-DGP parameters---$K$, $\boldsymbol\alpha$ and $\boldsymbol\eta$. Another relationship that I may need to derive is the expected correlation between the words in any two documents produced by the LDA-DGP.[^covariance]
+
+[^covariance]: The covariance between words in any two documents is a function of the interaction between the covariance given by independent draws from the Dirichlet distribution that prodcued the documents---$\boldsymbol\theta_d \sim \text{Dirichlet}(\boldsymbol\alpha)$---and the covariance given by independent draws from the Dirichlet distributions that produce the words---$\boldsymbol\beta_k \sim \text{Dirichlet}(\boldsymbol\eta)$.
+
+For (3), I intend to consider the same variables. The goal is to use the observable corpus variables to predict the latent LDA-DGP parameters.
+
+Diagnostic statistics that I am considering for (4) are: coherence metrics, likelihood metrics, $R^2$ (see below), and parameters from Zipf's, Heap's, and Taylor's laws observed in the data compared to those predicted by drawing from the posterior of a fit LDA model. Pathological misspecifications I am considering are: too many or too few topics and misspecifications in shape or magnitude of $\boldsymbol\alpha$ or $\boldsymbol\eta$. I am also interested in exploring the effects of the procedure for optimizing $\boldsymbol\alpha$ [@minka2000estimating] employed in MALLET [@mallet].
+
+# Coefficient of Determination for Topic Models
+According to an often-quoted but never cited definition, "the goodness of fit of a statistical model describes how well it fits a set of observations. Measures of goodness of fit typically summarize the discrepancy between observed values and the values expected under the model in question."[^goodness] Goodness of fit measures vary with the goals of those constructing the statistical model. Inferential goals may emphasize in-sample fit while predictive goals may emphasize out-of-sample fit. Prior information may be included in the goodness of fit measure for Bayesian models, or it may not. Goodness of fit measures may include methods to correct for model overfitting. In short, goodness of fit measures the performance of a statistical model against the ground truth of observed data. Fitting the data well is generally a necessary---though not sufficient---condition for trust in a statistical model, whatever its goals.
+
+[^goodness]: This quote appears verbatim on Wikipedia and countless books, papers, and websites. I cannot find its original source.
+
+Yet most researchers have eschewed goodness of fit measures as metrics of evaluating topic models. This is unfortunate. Goodness of fit is often the first line of defense against a pathologically misspecified model. If the model does not fit the data well, can it be relied on for inference or interpretation? Of course goodness of fit is not the only, perhaps not even the most important, measure of a good model. In fact a model that fits its training data too well is itself problematic. Nevertheless, a consistent and easily-interpreted measure of goodness of fit for topic models can serve to demystify the dark art of topic modeling to otherwise statistically literate audiences. 
+
+Several years ago, I derived a version of the coefficient of determination, R-squared, for topic models. I have written this up and posted it on arXiv [@jones2019coefficient], written and published an R package for it [@mvrsquared], but have never formally submitted it for peer review. I am currently working on a separate, related, paper with Mark Meyer presenting this R-squared as a generalization of the traditional R-squared for a range of statistical models. For my dissertation, I propose taking the additional step of re-stating this metric for topic models, including LDA and its derivates as well as non-probabilistic models such as LSA.
+
+The remainder of this section is organized as follows. Section 5.1 summarizes some relevant research related to evaluating topic models. Section 5.2 summarizes my preliminary results and proposal for research.
+
+## Related Work
+
+Evaluation methods for topic models can be broken down into three categories: manual inspection, intrinsic evaluation, and extrinsic evalutaion [@shi2019eval]. Manual inspection involves human judgement upon examinging the outputs of a topic model. Intrinsic evaluation measures performance based on model internals and its relation to training data. R-squared is an intrinsic evaluation method. Extrinsic methods compare model outputs to external information not explicitly modeld, such as document class. 
+
+Manual inspection is subjective but closely tracks how many topic models are used in real-world applications. Most research on topic model evaluation has focused on presenting ordered lists of words that meet human judgement about words that belong together. For each topic, words are ordered from the highest value of $\boldsymbol\beta_k$ to the lowest (i.e. the most to least frequent in each topic). In [@chang2009tea] the authors introduce the "intruder test." Judges are shown a few high-probability words in a topic, with one low-probability word mixed in. Judges must find the low-probability word, the intruder. They then repeat the procedure with documents instead of words. A good topic model should allow judges to easily detect the intruders.
+
+One class of intrinsic evaluation methods attempt to approximate human judgment. These metrics are called "coherence" metrics. Coherence metrics attempt to approximate the results of intruder tests in an automated fashion. Researchers have put forward several coherence measures. These typically compare pairs of highly-ranked words within topics. [@roder2015coherence] evaluate several of these. They have human evaluators rank topics by quality and then compare rankings based on various coherence measures to the ranking of the evaluators. They express skepticism that existing coherence measures are sufficient to assess topic quality. In an ACL paper, [@lau2014machine] find that normalized pointwise mutual information (NPMI) is a coherence metric that closely resembles human judgement. 
+
+Other popular intrinsic methods are types of goodness of fit. The primary goodness of fit measures in topic modeling are likelihood metrics. Likelihoods, generally the log likelihood, are naturally obtained from probabilistic topic models. Likelihoods may contain prior information, as is often the case with Bayesian models. If prior information is unknown or undesired, researchers may calculate the likelihood using only estimated parameters. Researchers have used likelihoods to select the number of topics [@griffiths2004scientific], compare priors [@wallach2009rethinking], or otherwise evaluate the efficacy of different modeling procedures. [@asuncion2012smoothing] [@nguyen2014sometimes] A popular likelihood method for evaluating out-of-sample fit is called perplexity. Perplexity measures a transformation of the likelihood of the held-out words conditioned on the trained model.
+
+The most common extrinsic evaluation method is to compare topic distributions to known document classes. These evaluations employ precision and recall or the area under a receiver operator characteristic (ROC) curve (AUC) on topically-tagged corpora [@asuncion2012smoothing]. The most prevalent topic in each document is taken as a document’s topical classification.
+
+Though useful, prevalent evaluation metrics in topic modeling are difficult to interpret, are inappropriate for use in topic modeling, or cannot be produced easily. Intruder tests are time-consuming and costly, making intruder tests infeasible to conduct regularly. Coherence is not primarily a goodness of fit measure. AUC, precision, and recall metrics mis-represent topic models as binary classifiers. This misrepresentation ignores one fundamental motivation for using topic models: allowing documents to contain multiple topics. This approach also requires substantial subjective judgement. Researchers must examine the high-probability words in a topic and decide whether it corresponds to the corpus topic tags or not.
+
+Likelihoods have an intuitive definition: they represent the probability of observing the training data if the model is true. Yet properties of the underlying corpus influence the scale of the likelihood function. Adding more documents, having a larger vocabulary, and even having longer documents all reduce the likelihood. Likelihoods of multiple models on the same corpus can be compared. (Researchers often do this to help select the number of topics for a final model.)[@griffiths2004scientific] Topic models on different corpora cannot be compared, however. One corpus may have 1,000 documents and 5,000 tokens, while another may have 10,000 documents and 25,000 tokens. The likelihood of a model on the latter corpus will be much smaller than a model on the former. Yet this does not indicate the model on the latter corpus is a worse fit; the likelihood function is simply on a different scale. Perplexity is a transformation of the likelihood for out-of-sample documents. The transformation makes perplexity less intuitive than a raw likelihood. Perplexity’s scale is influenced by the same factors as the likelihood.
+
+## Preliminary Results and Proposed Contributions
+
+Goodness of fit manifests itself in topic modeling through word frequencies. It is a common misconception that topic models are fully-unsupervised methods. If true, this would mean that no observations exist upon which to compare a model’s fitted values. However, probabilistic topic models are ultimately generative models of word frequencies [@blei2002lda]. The expected value of word frequencies in a document under a topic model is given by the expected value of a multinomial random variable. The that can be compared to the predictions, then, are the word frequencies themselves. Most goodness of fit measures in topic modeling are restricted to in-sample fit. Yet some out-of-sample measures have been developed [@buntine2009likelihood].
+
+For the sake of brevity, I will state the key to R-squared for topic models here. A fuller justification and derivation is in my arXiv pre-print [@jones2019coefficient] and will be included in my dissertation. The key to this metric lies in two observations:
+
+1. $E(\boldsymbol{X}|\boldsymbol\Theta,\boldsymbol{B}) = \boldsymbol{n} \odot \boldsymbol\Theta \cdot \boldsymbol{B}$ In other words, we can compare the observed word frequencies in the data ($\boldsymbol{X}$) to the expected word frequencies under the model ($E(\boldsymbol{X}|\boldsymbol\Theta,\boldsymbol{B})$).
+2. The various sums of squares used to calculate the coefficient of determination may be interpreted as sums of squared Euclidean distancess in 1 space. If generalized to n-space, we can then compare the actual and expected word frequencies in a calculation that follows the definition of the coefficient of determination.
+
+This interpretation of R-squared has most of the same properties as the commonly used R-squared. It is interpretable as the proportion of variation in the data explained by the model. An R-squared of 1 means that your model perfectly predicts the data. An R-squared of zero means that your model is no better than just guessing the mean of the data, i.e. a vector of word frequencies averaged across all documents. Yet we lose the lower bound of zero. Negative values of this new R-squared are computationally possible but this isn't a problem. It just means that one's model is worse than just guessing the mean of the data, quite the feat if one were to acheive it.
+
+I propose performing the following for this section of my dissertation:
+
+1. Update the paper on arXiv to reflect the current state of research in topic model evaluation
+2. Expand on the simulation study used for the paper based on the simulation method I will propose in the LDA-DGP study
+3. Expand on the real world corpora study to include more corpora. I would like to use more commonly used corpora so that readers familiar with the literature will have a more intuitive understanding of how the metric works.
+
+# _tidylda_, an R Package
+Off the shelf implementations of LDA are plentiful. Why do we need one more? My research will be far more impactful if it is easy for researchers to use it. Putting it in a package and hosting it on a well used package repository like CRAN [@cran] makes it more accessible. I also strongly desire to support the philosophies of the _tidyverse_ [@tidyverse] movement in the R ecosystem, which focuses on making data analysis and computing tools work for humans. Having topic modeling software compatible with the _tidyverse_ ecosystem is in line with Boyd-Graber et al.'s cry for "automatic text analysis for the people" [@boydgraber2017applications, ch. 10.3].
+
+_tidylda_ [@tidylda] is a natural extension of my own work in developing _textmineR_ [@textminer]. In 2014, I grew frustrated with the state of software for natural language processing in general, and topic modeling specifically. NLP software was esoteric in both syntax and data structures, concealing the fact that NLP workflows were not so different from others in statistics and machine learnign. I developed _textmineR_ with a mind to bring text analyses in R into the mainstream with respect to syntax, workflows, and data structures. In parallel---and unbeknownst to me at the time---Julia Silge and David Robinson were developing _tidytext_ [@tidytextjoss] with the same goals in mind, but tied into a much more popular (and frankly better) movement, the _tidyverse_. The syntactic differences between _textmineR_ and _tidytext_ are large. Though the user base is smaller than many other text mining packages for R, _textmineR_ has enough users that it would be unkind to radically alter its user interface. _tidylda_ is built from the ground up to conform to these tidy principles, houses a unique Gibbs sampler for LDA, and is narrower in scope than _textmineR_. When _tidylda_ is ready to be hosted on CRAN, I will replace _textmineR_'s native LDA functionality with calls to _tidylda_. 
+
+The remainder of this section is organized as follows: Section 6.1 summarizes existing implementations of LDA that are commonly used and the "tidyverse" framework used by _tidylda_. Section 6.2 outlines the novel contributions of _tidylda_ and the work remaining that I propose to include in my dissertation.
+
+## Related Work
+
+### The "tidyverse" and "tidy" text mining
+_tidylda_ takes its syntactic cues from an ecosystem of R packages known as _the tidyverse_. The tidyverse's goal is to "facilitate a conversation between a human and computer about data" [@tidyverse]. Packages in---and adjacent to---the tidyverse share a common design philosophy and syntax based on "tidy data" principles [@wickham2014tidy]. Tidy data has each variable in a column, each observation in a row, and each observational unit in a table. Extensions include the _broom_ package [@broom] for "tidying" up outputs from statistical models and the in-development _tidymodels_ ecosystem [@tidymodels] which extends the tidyverse philosophy to statistical modeling and machine learning workflows. 
+
+Recently, Silge et al. articulated a "tidy data" framework for text analyses---the _tidytext_ package [@tidytextjoss]. Their approach has "one row per document per token". The _tidytext_ package provides functionality to tokenize a corpus, transform it into this "tidy" format, and manipulate it in various ways, including preparing data for input into some of R's many topic modeling packages. The _tidytext_ package also provides tidying functions in the style of _broom_ to harmonize outputs from some of R's topic modeling packages. _tidylda_ manages inputs and outputs in the flavor of _tidytext_ but in one self contained package.
+
+I am still frustrated by topic modeling software in R. Pretty much all topic modeling packages I have seen---with the exceptions of _textmineR_ and _tidylda_---eschew R's conventional methods like _predict_ for working with statistical models. Some provide that functionality, but approach it from unconventional directions. Others don't provide the ability to predict topic distributions for contexts not in the training sample at all![^iftheydo] 
+
+[^iftheydo]: If they do, I can't figure out how to get it to work. 
+
+### Topic modeling software in R
+R has many packages for topic modeling. As far as I am aware, none are natively "tidy" though some have wrapper functions available in _tidytext_ for interoperability. In all cases---at least for R packages---these models support only symmetric $\boldsymbol\eta$ priors, though some support asymmetric $\boldsymbol\alpha$. 
+
+The _topicmodels_ package [@topicmodelspackage] supports fitting models for LDA and correlated topic models [@blei2007ctm] with both a collapsed Gibbs sampler and VEM. When using VEM, $\boldsymbol\alpha$ may be treated as a free parameter and estimated during fitting. It is designed to be interoperable with the _tm_ package [@tmjss], the oldest framework for text analysis in R.[^killitwithfire] _tidytext_ provides "tidyer" functions to make the _topicmodels_ package interoperable with other frameworks, such as _quanteda_ [@quanteda], _text2vec_ [@text2vec], and more. 
+
+[^killitwithfire] From private conversation, I can tell you that both _textmineR_ and _tidytext_ grew out of an immense frustration with working with _tm_.
+
+The _lda_ package [@chang2015lda] provides a collapsed Gibbs sampler for LDA, supervised LDA [@nguyen2015supervisedtm], and other less well-known models. It allows users to specify only symmetric $\boldsymbol\alpha$ and $\boldsymbol\eta$. Its syntax is esoteric and it requires text documents as input, but does not offer much flexibility in the way of pre-processing. It is generally not interoperable with other packages without significant programming on the part of its users. This is not to say that _lda_ is a bad package. To the contrary, its sequential Gibbs sampler is one of the fastest. _textmineR_ wrapped _lda_ for its topic modeling capabilities until I implemented my own Gibbs sampler in 2018.[^thanksbill]
+
+[^thanksbill]: This was the result of an independent study with Bill Kennedy. If not for that course, neither _tidylda_ nor any of my work on transfer learning would be where they are now. Thanks, Bill!
+
+The _text2vec_ package [@text2vec] is a framework for very fast text preprocessing and modeling. _textmineR_ wraps _text2vec_ for its pre-processing functions. _text2vec_ offers LDA implemented using the WarpLDA [@chen2015warplda] algorithm, only allowing for symmetric priors. _text2vec_ also offers other models related to distrbutional semantics. Its syntax is also esoteric using objects that reach back to actively running C++ code for performance reasons. One of _text2vec_'s novel features is that it implements many different coherence calculations; most packages implement one or none.
+
+The _STM_ package [@roberts2019stm] implements VEM algorithms for structural topic models [@roberts2013stm] and correlated topic models [@blei2007ctm]. _STM_ receives much of its interoperability through interfaces provided in _tidytext_. It offers unique capabilites for model initialization somewhat analagous to transfer learning. Models may be initialized at random or from an LDA model that has run for a few iterations. _STM_ does not offer this as a fully-fledged "transfer learning" paradigm. Instead it is a flag the user sets at runtime. _STM_ then produces the LDA model to hand off to the STM model internally. STM has several unique methods for setting priors but inspecting the documentation makes me believe that they are still symmetric, where applicable.
+
+### Topic modeling software in other languages
+There are many (many) programs to implement topic models in many languages. Anecdotally, the two most common are also two of the oldest: _MALLET_ and _Gensim_.
+
+_MALLET_ [@mallet] stands for "Machine Learning for LanguagE Toolkit." It is a Java program that implements LDA and many other models for working with text. Its LDA capabilities have a wrapper available in R---the _mallet_ package---which spins up a JVM in the background while users interact with it from R. MALLET allows users to set symmetric priors, but has an option to estimate $\boldsymbol\alpha$ based on [@minka2000estimating]. Input must be text files, as it does all of its own preprocessing. MALLET's LDA implementation offers both a collapsed Gibbs sampler and distributed approximate Gibbs in the flavor of Newman et al. [@newman2009distributed]. _tidytext_ has _broom_-like functions to format the outputs of the _mallet_ package.
+
+_Gensim_ [@gensim] is a Python package that implements many models for working with text data, including LDA, LSI, and HDP [@teh2006hdp. Its LDA implementation is based on VEM and can be distributed across many compute nodes. Users can set flags for both $\boldsymbol\alpha$ and $\boldsymbol\eta$ to be estimated during fitting. $\boldsymbol\eta$ can be a scalar, vector, or matrix. Gensim is the only other program that I am aware of that offers this option---other than _tidylda_. Gensim uses other Python packages for pre-processing. 
+
+## Preliminary Results and Proposed Contributions
+My goal for _tidylda_---as it pertains to my dissertation---is to publish it in a peer-reviewed journal. The two I am considering are the _Jounal of Open Source Software_ or the _Journal of Statistical Software_. _tidylda_ in its current state is the most sophisticated piece of software I've written; it's available for download; and has 96% test coverage. Yet it is not ready for publication.
+
+The current version of _tidylda_ has the following novel features and capabilities.
+
+1. It has a novel Gibbs sampler for fitting LDA models
+    - Sequential "true" Gibbs or parallel "approximate" Gibbs as in [@newman2009distributed]
+    - Implements transfer learning as described above
+    - Burn-in aggregates posterior samples over final iterations. Consistent with common practice in Bayesian stats and demonstrated improvements for LDA by as in [@nguyen2014sometimes]
+    - Asymmetric prior hyper parameters $\boldsymbol\alpha$ and $\boldsymbol\eta$. Per transfer learning: $\boldsymbol\eta$ can be a matrix as well.
+    - Predict methods for easy topic distributions on new documents ($\hat{\boldsymbol\Theta}$) 
+2. Implements "tidy" methods
+    - augment: calculates $P(\text{topic}|\text{word},\text{document})$ and appends the value to each "document-token" observation, as in _tidytext_.
+    - tidy: cleans up the output of posteriors----$\boldsymbol\Theta$ and $\boldsymbol{B}$---to make them compatible with _tidyverse_ syntax
+    - print and summarize: banal, but expected methods for any model in the tidy ecosystem
+3. Implements posterior derivations useful for analysis and---so far as I can tell---unique to packages I have developed
+    - $\boldsymbol\Lambda = P(\text{topics}|\text{words})$ as described in Appendix 1.
+    - $P(\text{topic}|\text{document}, \text{word})$---in the augment method---aggregates to $\boldsymbol\Lambda$ or $\hat{\boldsymbol\Theta}$ as projected by $\boldsymbol\Lambda$
+4. Incorporates diagnostic statistics derived elsewhere: probabilistic coherence and $R^2$ for topic models. 
+
+As I stated, I believe _tidylda_ needs more work before publication. The following is what I would like to acheive before a write up.
+
+1. Substitute Gibbs for WarpLDA Metropolis Hastings sampler [@chen2015warplda]
+    - Embarassingly parallel at the token instance level while retaining MCMC theoretical guarantees
+    - I will definitely implement a CPU version of this for the dissertation. I want to extend this to a GPU for scalability that parallels what is available for deep neural nets. This scalability is necessary to acheive the future I see for fine tuned models in corpus statistics.
+2. Implement the method to optimize $\boldsymbol\alpha$ as MALLET does, based on [@minka2000estimating] 
+4. Write a series of vignettes demonstrating use of the package for various tasks including and perhaps extending the detail of what I have for _textmineR_.[^vignettes]
+5. Formal write up of the package for publication in the Journal of Open Source Software (JOSS) or Journal of Statistical Software
+
+[^vignettes]: See the 6 vignettes I have here https://CRAN.R-project.org/package=textmineR
+
+# Approach and Timeline
+
+I am imagining the following chapters in my dissertation:
+
+1. Introduction and Motivation - Essentially Section 1, above
+2. Latent Dirichlet Allocation and Related Models - Essentially Section 2, above
+3. Studying the LDA-DGP - Placed as the first study as its lessons will propagate to others
+4. A Coefficient of Determination for Topic Models
+5. Fine Tuning LDA for Transfer Learing
+6. _tidylda_: Extended Latent Dirichlet Allocation using "Tidyverse" Conventions
+7. Discussion and Conclusions
+
+Because I already have chunks of my proposed research done, and because of interdependencies in the research, I plan to proceed in a nonlinear fashion. In priority order:
+
+1. I'd like to begin a draft write up of the work that has already been done in sufficient detail for the dissertation. This includes the separate (more general) R-squared paper I am working on with Dr. Meyer. 
+2. Implement WarpLDA in parallel on a CPU and integrate it into _tidylda_. This includes the transfer learning parts. (The good news is that the code is mostly modular and I can switch out the C++ parts keeping inputs and outputs the same.) Once this is done, I will submit _tidylda_ to CRAN.
+3. Link the LDA-DGP to Zipf's, Heap's and Taylor's laws
+4. Design a series of simulations using the LDA-DGP for study
+    - These data sets may be re-used for all three studies that require simulated data
+5. Study the datasets in (4) to see if there are any rules or heuristics to guide hyper parameter selection before modeling and to diagnose pathological misspecification after modeling
+6. Conduct the simulation portions of the R-squared and Transfer Learning studies
+7. Collect real-world data sets to be used for the empirical sections of R-squared and Transfer Learning research
+8. Conclude writing the three studies
+9. Write _tidylda_ up for JOSS or JSS
+10. Re-review literature review (in case any late breaking research needs to be included in my dissertation for context) and conclude write up
+
+I believe I can accomplish the above in 2 years, by April 2023.
+
+\newpage{}
+
+```{r, child='derive_lambda.Rmd'}
+```
+
+\newpage{}
+```{r, child='expected_frequency.Rmd'}
+```
+
+\newpage{}
+# Appendix 3: Reproduction of Table S3 from Shi et al., 2019
+
+```{r synth-review, fig.align = 'center', out.width = "100%", fig.cap = 'A selection of topic modeling studies that use synthetic corpora. Reproduced from Shi et al., 2019, supplimentary materials, Table S3. "This work." refers to Shi et al., 2019.'}
+
+knitr::include_graphics(here::here("figures", "shi-table.png"))
+
+```
+
+
+
+\newpage{}
+
+# References
+
