@@ -422,7 +422,7 @@ Gerlach and Altmann explore the relationships between Zipf's, Heaps's laws [@ger
 
 Gerlach and Altmann use LDA as the topic model, yet they do not use the LDA-DGP directly. Instead, they use the Poisson process model. Asyptotically, the Poisson process model and the LDA-DGP should be equivalent; the Poisson process is the limiting distribution of repeated Bernoulli trials (as in the LDA-DGP). Yet in the face of power laws and pre-asyptotics of finite samples (i.e., corpora), I think this choice warrants more exploration. Moreover, they used a "quenched average"---a concept from physics---rather than true expected value for this analysis. Under some conditions the two concepts may be equivalent; in other conditions not. 
 
-Even so, Gerlach and Altmann's exploration is a crucial link between Zip's law, Heaps's law, Taylor's law, and LDA, albeit in the asyptote. 
+Even so, Gerlach and Altmann's exploration is a crucial link between Zip's law, Heaps's law, Taylor's law, and LDA, albeit in the asymptote. 
 
 ## Proposed Contributions
 
