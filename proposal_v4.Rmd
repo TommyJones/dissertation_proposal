@@ -51,7 +51,7 @@ To envision the art of the possible, consider the state of statistical theory in
 
 Again, statistics does not have a named sub-field dedicated to such study. Since naming a concept can give it power, I humbly submit "_corpus statistics_", so named because of similarity with corpus linguistics as the study of "samples" of real-world language in linguistics. Corpus linguistics uses statistics and other tools but its primary concern is linguistics itself. Corpus statistics may focus on "traditional" statistical concerns such as constructing appropriate random samples, quantifying uncertainty about claims learned from data, developing rigorous evaluation metrics for models, and so on where language is the topic of study. Corpus statistics can build off of work already begun in linguistics, machine learning, and complexity theory which concerns itself with the study of complex phenomena and power laws.
 
-Language is saturated with the statistics of power laws. Two empirical laws of language, Zipf's law and Heap's law---covered in more detail later in this proposal---are two manifestations of power laws in language data. Power laws are extreme distributions, with significant mass in their tails. Power laws have extremely large variance. In fact, for many parameterizations, the second moment does not exist, making the variance effectively infinite [@taleb2020]. Because of power laws in language, any finite sample (i.e., corpus) will miss key information. 
+Language is saturated with the statistics of power laws. Two empirical laws of language, Zipf's law and Heaps's law---covered in more detail later in this proposal---are two manifestations of power laws in language data. Power laws are extreme distributions, with significant mass in their tails. Power laws have extremely large variance. In fact, for many parameterizations, the second moment does not exist, making the variance effectively infinite [@taleb2020]. Because of power laws in language, any finite sample (i.e., corpus) will miss key information. 
 
 Power laws in language might imply, then, that one needs external information for a thorough analysis of any one corpus. In fact, this is actually how humans learn from language! Consider the following thought experiment where one wants to learn about chemistry from an English-language textbook. Presumably, this person has good grasp on the English language already, having a vocabulary and covering subject matter greater than the book itself contains. This person then reads the textbook, learns about chemistry, and in the process updates and expands their knowledge of the English language.[^soundsbayesian] So, in addition to traditional statistical concerns like representative samples and reasonable model specification, perhaps corpus statistics needs large base models of language to be updated for analyzing finite corpora.
 
@@ -379,9 +379,9 @@ Shi et al. go further than others and argue that use of synthetic corpora is a "
 
 ### Empirical Language Laws
 
-Altmann and Gerlach describe 9 universal laws purported to describe statistical regularities in human language [@altmann2015laws]. These laws are Zipf's [@zipf1949], Heap's [@egghe2007untangling], Taylor's [@gerlach2014], Menzerath-Altmann [@altmann1980prolegomena], Recurrence [@zipf1949], Long-range correlation [@damerau1973tests], Entropy scaling [@altmann2015laws], Information content [@zipf1949], and various network topology laws [@altmann2015laws]. 
+Altmann and Gerlach describe 9 universal laws purported to describe statistical regularities in human language [@altmann2015laws]. These laws are Zipf's [@zipf1949], Heaps's [@egghe2007untangling], Taylor's [@gerlach2014], Menzerath-Altmann [@altmann1980prolegomena], Recurrence [@zipf1949], Long-range correlation [@damerau1973tests], Entropy scaling [@altmann2015laws], Information content [@zipf1949], and various network topology laws [@altmann2015laws]. 
 
-Of these laws, I believe three are most relevant: Zipf's, Heap's, and Taylor's laws.  The laws of Menzerath-Altmann, Recurrence, Long-range correlation, and Information content refer to properties of sub-words (e.g. length to information content), order of words, or proximity between words. None of these does the LDA-DGP purport to model. The law of Entropy scaling links entropy---in the information theoretic sense [@shannon2001mathematical]---to the number of words in a block of text. The LDA-DGP may or may not be able to re-produce this law. Similarly, some network views of a corpus may or may not apply to the LDA-DGP. Both may warrant future exploration but are less directly macroscopic properties of a corpus than Zipf's, Heap's, and Taylor's laws.  
+Of these laws, I believe three are most relevant: Zipf's, Heaps's, and Taylor's laws.  The laws of Menzerath-Altmann, Recurrence, Long-range correlation, and Information content refer to properties of sub-words (e.g. length to information content), order of words, or proximity between words. None of these does the LDA-DGP purport to model. The law of Entropy scaling links entropy---in the information theoretic sense [@shannon2001mathematical]---to the number of words in a block of text. The LDA-DGP may or may not be able to re-produce this law. Similarly, some network views of a corpus may or may not apply to the LDA-DGP. Both may warrant future exploration but are less directly macroscopic properties of a corpus than Zipf's, Heaps's, and Taylor's laws.  
 
 #### Zipf's law
 Zipf's law states that the frequency of a word is inversely proportional to the power of its frequency-rank. Zipf's law is not unique to any language; it appears to apply to all of them [@cancho2003]. Zipf's law has also been applied to the sizes of cities [@arshad2018zipf], casualties in armed conflict [@gillespie2015], and more. Zipf's law is a statement of a word's frequency and its rank. Yet if word frequencies in a corpus are plotted as a histogram, the power law relationship holds [@sole2008].
@@ -398,14 +398,14 @@ where $r$ is a word's rank, $F(r)$ is the frequency of a word's rank, and $\gamm
 
 Goldwater et al. explore the relationship between Zipf's law and then standard statistical models of language [@goldwater2011zipf]. They develop a framework for producing power law word frequencies in two stages. Critically, they link this framework to several models closely related to LDA but do not extend it to the LDA-DGP itself.
 
-#### Heap's law
-Heap's law states that the number of unique words in a corpus, $V$, scales sub-linearly with the total number of words in a corpus, $N$ [@heaps1978information]. Heap's law is another power law. Unlike Zipf's law, it is an increasing power law.
+#### Heaps's law
+Heaps's law states that the number of unique words in a corpus, $V$, scales sub-linearly with the total number of words in a corpus, $N$ [@heaps1978information]. Heaps's law is another power law. Unlike Zipf's law, it is an increasing power law.
 
 \begin{align}
   V \propto N^\delta \text{ for } N > 1, 0 < \delta < 1
 \end{align}
 
-There are several ways to compute Heap's law for a single corpus. Altmann and Gerlach use two methods: compute $V$ and $N$ for each document in the corpus and progress over each word in a corpus calculating new values of $V$ and $N$ as each word is added. The latter approach works for single documents of sufficient length as well, such as a book [@altmann2015laws].
+There are several ways to compute Heaps's law for a single corpus. Altmann and Gerlach use two methods: compute $V$ and $N$ for each document in the corpus and progress over each word in a corpus calculating new values of $V$ and $N$ as each word is added. The latter approach works for single documents of sufficient length as well, such as a book [@altmann2015laws].
 
 #### Taylor's law
 Taylor's law is a third power law relationship, originally posed in the context of ecology by Lionel Roy Taylor [@taylor1961aggregation]. In linguistics, Taylor's law states that the standard deviation of the total number of words is proportional to the power of the mean of the total number of words. Formally,
@@ -418,15 +418,17 @@ Taylor's law is a third power law relationship, originally posed in the context 
 where $\sigma(N) = \sqrt{\mathbb{V}(N)}$, $\mu(N) = \mathbb{E}(N)$, and $\epsilon$ is to be fit from data.
 
 #### Relationship between laws
-Gerlach and Altmann explore the relationship between these three laws [@gerlach2014]. Under a commonly used model of a Poisson process, the relationship predicted is that $\gamma = \delta^{-1}$ and $\epsilon = 1/2$. Yet they find that this null Poisson model fits the data poorly, especially with Taylor's law. Instead, they use a topic model---where relative frequencies of words are different in each topic---to find a relationship between the laws that better fits the data. 
+Gerlach and Altmann explore the relationships between Zipf's, Heaps's laws [@gerlach2014]. They model word frequencies as resulting from a Poisson process. The "null" Poisson model links Zipf's and Heaps's laws. Yet it fits the data under Taylor's law poorly. Yet they find that incorporating a topic model---where relative frequencies of words differ by topic---fits data for all three laws reasonably well. 
 
-Candidly, I need deeper study of Gerlach and Altmann (2014). Casual reading demonstrates that they do use a variant of LDA for their topic model. But I don't yet understand their exact approach. And Gerlach's later work in [@shi2019eval] uses a non-LDA data generation mechanism. It is possible that much of the work I propose to link the LDA-DGP to these three laws has already been completed. And it is also possible that Gerlach and his colleagues have already discovered a critical flaw with the approach I propose. I have more work to do here.
+Gerlach and Altmann use LDA as the topic model, yet they do not use the LDA-DGP directly. Instead, they use the Poisson process model. Asyptotically, the Poisson process model and the LDA-DGP should be equivalent; the Poisson process is the limiting distribution of repeated Bernoulli trials (as in the LDA-DGP). Yet in the face of power laws and pre-asyptotics of finite samples (i.e., corpora), I think this choice warrants more exploration. Moreover, they used a "quenched average"---a concept from physics---rather than true expected value for this analysis. Under some conditions the two concepts may be equivalent; in other conditions not. 
+
+Even so, Gerlach and Altmann's exploration is a crucial link between Zip's law, Heaps's law, Taylor's law, and LDA, albeit in the asyptote. 
 
 ## Proposed Contributions
 
 For this portion of my dissertation research, I propose making the following contributions.
 
-1. Producing formal mathematical statements linking the LDA-DGP to Zipf's, Heap's, and Taylor's laws of language as well as other corpus statistics such as correlation between words in two contexts,
+1. Producing formal mathematical statements linking the LDA-DGP to Zipf's, Heaps's, and Taylor's laws of language as well as other corpus statistics such as correlation between words in two contexts,
 2. Use principles of statistical design to plan and produce many synthetic corpora using the LDA-DGP that conform to statistical laws of human language and comprise a representative sample of the population of corpora that researchers may study with LDA,
 3. Using (1) and (2) above, attempt to find rules or heuristics for specifying $K$, $\boldsymbol\alpha$, and $\boldsymbol\eta$ based on properties of the corpus, and
 4. Using (1) and (2) above, diagnose the effects of model misspecification and attempt to develop diagnostic statistics or tests one may apply to an LDA model to detect pathological misspecification.
@@ -437,7 +439,7 @@ For (2), I intend to use principles from statistical design---recommended for su
 
 For (3), I intend to consider the same variables. The goal is to use the observable corpus variables to predict the latent LDA-DGP parameters.
 
-Diagnostic statistics that I am considering for (4) are: coherence metrics, likelihood metrics, $R^2$ (see below), and parameters from Zipf's, Heap's, and Taylor's laws observed in the data compared to those predicted by drawing from the posterior of a fit LDA model. Pathological misspecifications I am considering are: too many or too few topics and misspecifications in shape or magnitude of $\boldsymbol\alpha$ or $\boldsymbol\eta$. I am also interested in exploring the effects of the procedure for optimizing $\boldsymbol\alpha$ [@minka2000estimating] employed in MALLET [@mallet].
+Diagnostic statistics that I am considering for (4) are: coherence metrics, likelihood metrics, $R^2$ (see below), and parameters from Zipf's, Heaps's, and Taylor's laws observed in the data compared to those predicted by drawing from the posterior of a fit LDA model. Pathological misspecifications I am considering are: too many or too few topics and misspecifications in shape or magnitude of $\boldsymbol\alpha$ or $\boldsymbol\eta$. I am also interested in exploring the effects of the procedure for optimizing $\boldsymbol\alpha$ [@minka2000estimating] employed in MALLET [@mallet].
 
 # Coefficient of Determination for Topic Models
 According to an often-quoted but never cited definition, "the goodness of fit of a statistical model describes how well it fits a set of observations. Measures of goodness of fit typically summarize the discrepancy between observed values and the values expected under the model in question."[^goodness] Goodness of fit measures vary with the goals of those constructing the statistical model. Inferential goals may emphasize in-sample fit while predictive goals may emphasize out-of-sample fit. Prior information may be included in the goodness of fit measure for Bayesian models, or it may not. Goodness of fit measures may include methods to correct for model over fitting. In short, goodness of fit measures the performance of a statistical model against the ground truth of observed data. Fitting the data well is generally a necessary---though not sufficient---condition for trust in a statistical model, whatever its goals.
@@ -572,7 +574,7 @@ Because I already have chunks of my proposed research done, and because of inter
 
 1. I'd like to begin a draft write up of the work that has already been done in sufficient detail for the dissertation. This includes the separate (more general) R-squared paper I am working on with Dr. Meyer. 
 2. Implement WarpLDA in parallel on a CPU and integrate it into _tidylda_. This includes the transfer learning algorithm. (The good news is that the code is mostly modular and I can switch out the C++ parts keeping inputs and outputs the same.) Once this is done, I will submit _tidylda_ to CRAN.
-3. Link the LDA-DGP to Zipf's, Heap's and Taylor's laws
+3. Link the LDA-DGP to Zipf's, Heaps's and Taylor's laws
 4. Design a series of simulations using the LDA-DGP for study
     - These data sets may be re-used for all three studies that require simulated data
 5. Study the data sets in (4) to see if there are any rules or heuristics to guide hyper parameter selection before modeling and to diagnose pathological misspecification after modeling
