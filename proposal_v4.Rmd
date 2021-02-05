@@ -4,6 +4,8 @@ title: "Corpus Statistics and Fine Tuning Latent Dirichlet Allocation for Transf
 author:
   - Tommy Jones^[PhD Student, George Mason University Dept. of Computational and Data Sciences, tjones42@gmu.edu]
   
+date: "`format(Sys.time(), '%d %B, %Y')`"
+  
 abstract: |
   Language is one of the most information rich and abundant data sources available. Rigorous statistical study of linguistic phenomena can elevate the digital humanities, linguistic applications to computational social science, and statistics itself. As yet, statistical applications to language, whether in linguistics, computation, or otherwise, are largely ad-hoc. Performance gains in modeling have largely been due to two factors: fine tuning transfer learning and increasing the size and complexity of models. Due to the statistical nature of human language---governed by several power law phenomena---fine tuning transfer learning may be advantageous for corpus analyses, not just artificial intelligence applications. Yet state of the art "transformer" models are expensive and opaque. I propose we turn revisit Latent Dirichlet Allocation (LDA) for corpus statistics. As a parametric statistical model of a data generating process, it has the potential to be used in statistically rigorous ways to study language. And I have implemented an algorithm for fine tuning transfer learning using LDA. In this dissertation proposal, I state my case for "corpus statistics", a more statistically rigorous take on analyzing text data, review the literature around LDA, propose 3 studies, and 1 piece of software to fulfill the requirements of my dissertation.
   
