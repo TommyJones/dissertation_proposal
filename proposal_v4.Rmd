@@ -373,13 +373,13 @@ Still, producing data with statistical properties of human language from the LDA
 
 Techniques---whether analytical of empirical---that discover the "right" model on simulated data can guide the researcher on real data sets. Yet it is unlikely that there is a "right" model for any real corpus. This is why I refer to "detecting pathologically misspecified models", rather than "finding the right model". It may also be that the LDA-DGP cannot perfectly reproduce relevant statistical laws of language. If that is the case, researchers must decide whether LDA is "good enough" or if a different topic model---for example CTMs [@blei2007ctm] or STMs [@roberts2013stm]---is a better choice. 
 
-My objectives with this research are as follows: I wish to analytically link the LDA-DGP to relevant statistical laws of language[^beguninone], discover rules and heuristics from statistics on $\boldsymbol{X}$ to guide LDA model specification, and discover diagnostic statistics to discover whether an LDA model is pathologically misspecified. The remainder of this section is organized as follows: Section 4.1 summarizes related work from complex systems theory, stochastic simulation, and---of course---topic modeling. Section 4.2 outlines the approach I propose for this study.
+My objectives with this research are as follows: I wish to analytically link the LDA-DGP to relevant statistical laws of language[^beguninone], discover rules and heuristics from statistics on $\boldsymbol{X}$ to guide LDA model specification, and discover diagnostic statistics to discover whether an LDA model is pathologically misspecified. The remainder of this section is organized as follows: Section 4.1 summarizes related work from complex systems theory, stochastic simulation, and topic modeling. Section 4.2 outlines the approach I propose for this study.
 
 [^beguninone]: I have begun this work with Appendix 2.
 
 ## Related Work
 
-Work related to studying the LDA-DGP pulls from two---seemingly disparate---fields: complex systems theory and---of course---topic modeling. Complex systems theory deals in part with the emergence of power law distributions--as exemplified by some empirical laws of language---from complex systems [@cioffi2008power]. Topic modeling concerns itself with the study of LDA and LDA-like models.
+Work related to studying the LDA-DGP pulls from two seemingly disparate fields: complex systems theory and of course topic modeling. Complex systems theory deals in part with the emergence of power law distributions---as exemplified by some empirical laws of language---from complex systems [@cioffi2008power]. Topic modeling concerns itself with the study of LDA and LDA-like models.
 
 ### Simulation Studies for LDA
 
